@@ -1,0 +1,25 @@
+{
+  "name": "capicua",
+  "version": "3.0.0",
+  "description": "Plataforma educativa tipo videojuego 3D para aprender matemáticas, física e ingeniería con IA",
+  "main": "script.js",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "lint": "node -e \"const fs=require('fs'),cp=require('child_process');fs.readdirSync('.').filter(f=>f.endsWith('.js')).forEach(f=>cp.execSync('node --check '+f,{stdio:'inherit'}))\"",
+    "build": "echo \"Build completo para Netlify\""
+  },
+  "keywords": [
+    "educacion",
+    "matematicas",
+    "videojuego-3d",
+    "ia",
+    "supabase",
+    "threejs"
+  ],
+  "author": "Equipo de Ingeniería CAPICÚA",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {}
+}

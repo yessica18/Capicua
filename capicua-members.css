@@ -1,0 +1,285 @@
+/* ═══════════════════════════════════════════════
+   CAPICÚA 2.1 — Membresías + Victoria
+   ═══════════════════════════════════════════════ */
+
+/* ── MEMBRESÍAS ── */
+.membership-page{max-width:1100px;margin:0 auto;padding:24px 16px}
+.mem-support{text-align:center;text-transform:uppercase;letter-spacing:3px;font-size:.72rem;opacity:.5;margin-bottom:4px}
+.mem-title{text-align:center;font-size:2rem;font-weight:800;margin-bottom:12px}
+.mem-desc{text-align:center;max-width:720px;margin:0 auto 28px;font-size:.92rem;line-height:1.55;opacity:.82}
+
+/* Period tabs */
+.mem-periods{display:flex;justify-content:center;gap:0;margin-bottom:28px;background:rgba(30,20,60,.5);border-radius:12px;overflow:hidden;border:1px solid rgba(99,66,255,.2);width:fit-content;margin-left:auto;margin-right:auto}
+.mem-period{padding:10px 22px;font-size:.88rem;font-weight:600;border:none;background:transparent;color:var(--fg,#fff);cursor:pointer;transition:background .2s}
+.mem-period.active{background:linear-gradient(135deg,#6342ff,#8b5cf6);color:#fff}
+.mem-period:hover:not(.active){background:rgba(99,66,255,.15)}
+
+/* Cards grid */
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+
+/* Single card */
+.mem-card{background:rgba(20,12,50,.55);border:2px solid var(--mem-border,#6342ff);border-radius:16px;padding:22px 18px;display:flex;flex-direction:column;position:relative;transition:transform .25s,box-shadow .25s}
+.mem-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(99,66,255,.2)}
+.mem-card.current{box-shadow:0 0 24px color-mix(in srgb,var(--mem-border) 30%,transparent)}
+
+.mem-tag{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:6px;background:rgba(99,66,255,.2);border:1px solid rgba(99,66,255,.25);margin-bottom:10px;width:fit-content}
+.mem-plan-name{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.mem-price{font-size:2rem;font-weight:900;margin-bottom:2px}
+.mem-price small{font-size:.7rem;font-weight:400;opacity:.6}
+.mem-billing{font-size:.72rem;opacity:.6;margin-bottom:14px;min-height:28px}
+
+.mem-perks{list-style:none;padding:0;margin:0 0 16px;flex:1}
+.mem-perks li{position:relative;padding:4px 0 4px 20px;font-size:.82rem;line-height:1.4}
+.mem-perks li::before{content:"\2714";position:absolute;left:0;color:var(--mem-border,#6342ff);font-size:.75rem}
+
+.mem-btn{width:100%;padding:12px;border-radius:12px;border:none;font-weight:700;font-size:.92rem;cursor:pointer;transition:all .2s}
+.mem-btn.included{background:rgba(99,66,255,.15);color:var(--fg,#fff);opacity:.6;cursor:default}
+.mem-btn.choose{background:linear-gradient(135deg,var(--mem-border,#6342ff),color-mix(in srgb,var(--mem-border) 70%,#fff));color:#fff}
+.mem-btn.choose:hover{filter:brightness(1.15);transform:scale(1.02)}
+
+/* Code redemption */
+.mem-code-box{background:rgba(30,20,60,.5);border:1px solid rgba(99,66,255,.2);border-radius:16px;padding:20px;margin-bottom:20px}
+.mem-code-title{font-weight:700;margin-bottom:10px;font-size:1rem}
+.mem-code-row{display:flex;gap:8px}
+.mem-code-input{flex:1;padding:10px 14px;border-radius:10px;border:1px solid rgba(99,66,255,.25);background:rgba(20,12,50,.6);color:var(--fg,#fff);font-size:.9rem}
+.mem-code-input:focus{outline:none;border-color:#6342ff}
+.mem-code-btn{padding:10px 20px;border-radius:10px;border:none;background:rgba(99,66,255,.25);color:var(--fg,#fff);font-weight:600;cursor:pointer;transition:background .2s}
+.mem-code-btn:hover{background:rgba(99,66,255,.4)}
+
+/* Demo notice */
+.mem-demo{background:rgba(30,20,60,.4);border:1px solid rgba(99,66,255,.15);border-radius:12px;padding:16px;font-size:.8rem;line-height:1.5;opacity:.7;margin-bottom:28px}
+
+/* Badges */
+.mem-badges{margin-top:8px}
+.mem-badges-title{font-size:1.1rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.mem-badge-count{font-size:.8rem;font-weight:400;opacity:.5;background:rgba(99,66,255,.15);padding:2px 10px;border-radius:10px}
+.mem-badge-grid{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.mem-badge{min-width:100px;text-align:center;padding:12px 8px;border-radius:14px;border:1px solid rgba(99,66,255,.15);background:rgba(30,20,60,.4);opacity:.4;filter:grayscale(.6);transition:all .2s}
+.mem-badge.earned{opacity:1;filter:none;border-color:rgba(99,66,255,.3)}
+.mem-badge-icon{width:48px;height:48px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:rgba(99,66,255,.12);border:2px solid rgba(99,66,255,.2)}
+.mem-badge.earned .mem-badge-icon{border-color:currentColor}
+.mem-badge-name{font-size:.72rem;font-weight:600;margin-bottom:2px}
+.mem-badge-desc{font-size:.62rem;opacity:.5}
+
+/* Profile tier badge */
+.profile-tier-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:600;background:linear-gradient(135deg,rgba(99,66,255,.2),rgba(199,66,255,.15));border:1px solid rgba(99,66,255,.2);margin-top:6px}
+
+/* ── VICTORIA OVERLAY ── */
+.victory-overlay{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:rgba(10,5,30,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:victoryIn .4s ease-out}
+@keyframes victoryIn{from{opacity:0}to{opacity:1}}
+
+.victory-content{text-align:center;animation:victoryPop .5s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:2}
+@keyframes victoryPop{from{opacity:0;transform:scale(.7) translateY(40px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.victory-avatar{width:120px;height:120px;margin:0 auto 16px;position:relative}
+.victory-avatar.dancing{animation:victoryDance 0.6s ease-in-out infinite}
+@keyframes victoryDance{
+  0%,100%{transform:translateY(0) rotate(0) scale(1)}
+  25%{transform:translateY(-18px) rotate(-8deg) scale(1.05)}
+  50%{transform:translateY(-6px) rotate(0) scale(1.02)}
+  75%{transform:translateY(-18px) rotate(8deg) scale(1.05)}
+}
+
+.victory-rings{position:absolute;inset:-40px;pointer-events:none}
+.victory-rings .ring{position:absolute;inset:0;border:2px solid rgba(99,66,255,.3);border-radius:50%;animation:ringExpand 2s ease-out infinite}
+.victory-rings .ring:nth-child(2){animation-delay:.4s}
+.victory-rings .ring:nth-child(3){animation-delay:.8s}
+@keyframes ringExpand{from{transform:scale(.5);opacity:.8}to{transform:scale(2.5);opacity:0}}
+
+.victory-title{font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,#ffd700,#ff6b9d,#c742ff,#6342ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:none;margin-bottom:20px;letter-spacing:2px;filter:drop-shadow(0 0 20px rgba(255,215,0,.3))}
+
+.victory-stats{display:flex;gap:32px;justify-content:center;margin:20px 0}
+.victory-stat{text-align:center}
+.victory-stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;opacity:.6;margin-bottom:4px}
+.victory-stat-val{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#6342ff,#c742ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.victory-countdown{margin-top:20px;font-size:.85rem;opacity:.6}
+
+/* ── MEJORAS GENERALES ── */
+html{scroll-behavior:smooth}
+#view{animation:viewFadeIn .3s ease-out}
+@keyframes viewFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.card,.region-card,.level-card,.mentor-card,.enemy-card,.game-card{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important}
+.card:hover,.region-card:hover,.level-card:hover,.mentor-card:hover,.enemy-card:hover,.game-card:hover{transform:translateY(-3px)!important;box-shadow:0 8px 28px rgba(99,66,255,.15)!important}
+
+.modal-backdrop,.modal-overlay{backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important}
+.modal,.modal-content{animation:modalPop .3s cubic-bezier(.34,1.56,.64,1)!important;border-radius:16px!important}
+@keyframes modalPop{from{opacity:0;transform:scale(.9) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.toast{animation:toastSlide .3s cubic-bezier(.4,0,.2,1)!important;border-radius:12px!important}
+@keyframes toastSlide{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+
+button,.btn{transition:transform .15s ease,box-shadow .15s ease,background .2s ease!important}
+button:active,.btn:active{transform:scale(.96)!important}
+
+.progress,.xp-bar,.hp-bar,.pi-bar{border-radius:12px!important;overflow:hidden!important}
+.progress>div,.xp-fill,.hp-fill,.pi-fill{transition:width .6s cubic-bezier(.4,0,.2,1)!important;border-radius:12px!important}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:rgba(30,20,60,.3);border-radius:4px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#6342ff,#c742ff);border-radius:4px}
+
+:focus-visible{outline:2px solid #9966ff!important;outline-offset:2px!important}
+
+@keyframes xpFloat{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-40px) scale(1.1)}100%{opacity:0;transform:translateY(-80px) scale(.8)}}
+
+/* Victory confetti canvas */
+.victory-confetti-canvas{position:fixed;inset:0;z-index:10001;pointer-events:none}
+
+/* Light theme overrides */
+[data-theme=light] .mem-card{background:rgba(255,255,255,.82);border-color:rgba(99,66,255,.15)}
+[data-theme=light] .mem-periods{background:rgba(240,238,255,.8)}
+[data-theme=light] .mem-code-box{background:rgba(240,238,255,.7)}
+[data-theme=light] .mem-demo{background:rgba(240,238,255,.5)}
+
+/* ── TEMPORIZADOR ── */
+.lesson-timer{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(99,66,255,.2),rgba(199,66,255,.15));border:1px solid rgba(99,66,255,.25);font-weight:700;font-size:.85rem;font-variant-numeric:tabular-nums;animation:timerPulse 2s ease-in-out infinite}
+.lesson-timer svg{color:var(--violet);flex:none}
+@keyframes timerPulse{50%{box-shadow:0 0 12px rgba(99,66,255,.3)}}
+
+/* ── FLASHCARDS ── */
+.flashcard-deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.flashcard{perspective:800px;cursor:pointer;min-height:160px}
+.flashcard .fc-front,.flashcard .fc-back{border-radius:16px;padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:160px;backface-visibility:hidden;transition:transform .5s}
+.flashcard .fc-front{background:linear-gradient(135deg,rgba(99,66,255,.2),rgba(199,66,255,.12));border:1px solid rgba(99,66,255,.25)}
+.flashcard .fc-back{background:linear-gradient(135deg,rgba(46,204,113,.15),rgba(99,66,255,.1));border:1px solid rgba(46,204,113,.2);position:absolute;inset:0;transform:rotateY(180deg)}
+.flashcard{position:relative}
+.flashcard.flipped .fc-front{transform:rotateY(180deg)}
+.flashcard.flipped .fc-back{transform:rotateY(0)}
+.fc-num{font-size:.7rem;opacity:.5;margin-bottom:8px}
+.fc-text{font-size:1rem;font-weight:600;font-family:var(--f-math)}
+.fc-hint{font-size:.7rem;opacity:.4;margin-top:12px}
+
+/* ── AVATAR CUSTOMIZER ── */
+.avatar-customizer{max-width:900px;margin:0 auto}
+.avatar-color-btn{transition:transform .15s,border-color .15s}
+.avatar-color-btn:hover{transform:scale(1.15)}
+.avatar-color-btn.selected{border-color:#fff!important;box-shadow:0 0 12px rgba(255,255,255,.3)}
+
+/* ── CAPI BAILA ── */
+.capi-dancing{animation:capiDanceMove .5s ease-in-out 6!important}
+@keyframes capiDanceMove{
+  0%,100%{transform:translateY(0) rotate(0)}
+  25%{transform:translateY(-10px) rotate(-10deg)}
+  75%{transform:translateY(-10px) rotate(10deg)}
+}
+
+/* ── SIMULACROS / EXÁMENES ── */
+.simulacro-page{max-width:900px;margin:0 auto}
+.exam-header{background:linear-gradient(135deg,rgba(99,66,255,.15),rgba(255,107,157,.1));border:1px solid rgba(99,66,255,.2);border-radius:16px;padding:24px;margin-bottom:20px;text-align:center}
+.exam-progress{display:flex;gap:4px;margin:12px 0}
+.exam-progress i{flex:1;height:6px;border-radius:4px;background:rgba(99,66,255,.15)}
+.exam-progress i.done{background:var(--ok)}
+.exam-progress i.current{background:var(--violet);animation:timerPulse 1s infinite}
+.exam-progress i.wrong{background:var(--bad)}
+.exam-timer{font-size:1.8rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--violet);margin:8px 0}
+.exam-question{font-family:var(--f-math);font-size:1.15rem;line-height:1.6;margin:16px 0}
+.exam-results{text-align:center;padding:32px}
+.exam-score{font-size:3rem;font-weight:900;background:linear-gradient(135deg,#ffd700,#ff6b9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── ENGANCHES ── */
+.enganches-page{max-width:900px;margin:0 auto}
+
+/* ── FALENCIAS ── */
+.falencias-page{max-width:900px;margin:0 auto}
+
+/* ── MENTORES ── */
+.mentores-page{max-width:900px;margin:0 auto}
+
+/* ── MASCOTA ── */
+.mascota-page{max-width:600px;margin:0 auto}
+.pet-avatar{animation:fl 3s ease-in-out infinite}
+
+/* ── CHAT/DUELOS ── */
+.chat-duelos-page{max-width:700px;margin:0 auto}
+
+/* ── REPASO ── */
+.repaso-page{max-width:900px;margin:0 auto}
+
+@media(max-width:900px){
+  .mem-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .mem-grid{grid-template-columns:1fr}
+  .mem-periods{flex-direction:column;width:100%}
+  .victory-stats{flex-direction:column;gap:12px}
+  .victory-title{font-size:1.6rem}
+  .flashcard-deck{grid-template-columns:1fr}
+  .avatar-customizer .split{grid-template-columns:1fr}
+  .simulacro-page .grid{grid-template-columns:1fr 1fr}
+  .habitat-grid{grid-template-columns:1fr 1fr}
+}
+
+/* ── SIMULACROS Y DIAGNOSTICO ── */
+.simulacro-page{max-width:900px;margin:0 auto;padding:24px 16px}
+.simulacro-page .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.simulacro-page .stack{display:flex;flex-direction:column;gap:8px}
+.simulacro-page .stack.tight{gap:4px}
+
+.exam-header{text-align:center;padding:16px 0}
+.exam-progress{display:flex;justify-content:center;gap:4px;margin:8px 0}
+.exam-progress i{width:12px;height:12px;border-radius:50%;background:var(--line2,#333);display:inline-block}
+.exam-progress i.done{background:var(--ok,#4caf50)}
+.exam-progress i.wrong{background:var(--bad,#f44336)}
+.exam-progress i.current{background:var(--violet,#6342ff);box-shadow:0 0 8px var(--violet,#6342ff)}
+
+.exam-timer{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--fg)}
+.exam-question{font-size:1.1rem;font-weight:600;margin-bottom:16px;text-align:center}
+
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border-radius:12px;border:1px solid var(--line2,#333);background:var(--panel,#1a1a2e);cursor:pointer;text-align:left;font-size:.95rem;transition:all .2s;color:var(--fg,#fff)}
+.opt:hover{border-color:var(--violet,#6342ff);background:rgba(99,66,255,.1)}
+.opt.ok{border-color:var(--ok,#4caf50);background:rgba(76,175,80,.15);color:var(--ok,#4caf50)}
+.opt.bad{border-color:var(--bad,#f44336);background:rgba(244,67,54,.15);color:var(--bad,#f44336)}
+.opt:disabled{pointer-events:none;opacity:.8}
+
+.exam-results{text-align:center;padding:24px 0}
+.exam-score{font-size:4rem;font-weight:800;background:linear-gradient(135deg,#6342ff,#ff6b9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.glyph{display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:700;font-family:monospace}
+
+/* Diagnostic level chips */
+.chip{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600;color:#fff}
+.chip.ok{background:var(--ok,#4caf50)}
+.chip.warn{background:var(--warn,#ff9800)}
+.chip.bad{background:var(--bad,#f44336)}
+.chip.sm{font-size:.65rem;padding:1px 6px}
+
+/* Progress bar */
+.bar{height:6px;background:var(--line2,#333);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:3px;transition:width .4s}
+
+/* ── MASCOTA ACUARIO/SELVA ── */
+.mascota-page{max-width:900px;margin:0 auto;padding:24px 16px}
+.habitat-tabs{display:flex;gap:8px;margin-bottom:16px}
+.habitat-tab{flex:1;padding:12px;border-radius:12px;border:2px solid var(--line2,#333);text-align:center;cursor:pointer;font-weight:600;transition:all .2s;background:var(--panel,#1a1a2e);color:var(--fg,#fff)}
+.habitat-tab.active{border-color:var(--violet,#6342ff);background:rgba(99,66,255,.15)}
+.habitat-tab:hover{border-color:var(--violet,#6342ff)}
+
+.habitat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.animal-card{border-radius:14px;border:1px solid var(--line2,#333);padding:16px;text-align:center;background:var(--panel,#1a1a2e);transition:all .2s}
+.animal-card:hover{border-color:var(--violet,#6342ff);transform:translateY(-2px)}
+.animal-card .animal-icon{font-size:2.5rem;margin-bottom:8px}
+.animal-card .animal-name{font-weight:700;font-size:.95rem}
+.animal-card .animal-cost{font-size:.8rem;opacity:.7;margin-top:4px}
+
+.pet-active-banner{border-radius:14px;padding:20px;margin-bottom:16px;border:2px solid var(--violet,#6342ff);background:rgba(99,66,255,.08)}
+.pet-active-banner .pet-icon{font-size:3rem}
+.pet-xp-bar{height:8px;background:var(--line2,#333);border-radius:4px;overflow:hidden;margin-top:8px}
+.pet-xp-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--violet,#6342ff),#ff6b9d);transition:width .3s}
+
+.skill-list{margin-top:12px}
+.skill-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:.85rem}
+.skill-item.locked{opacity:.4}
+.skill-item .skill-icon{width:24px;text-align:center}
+
+.pet-actions{display:flex;gap:8px;margin-top:12px;justify-content:center}
+.pet-actions .btn{font-size:.8rem;padding:6px 14px}
+
+/* Capi chat */
+.capi-chat{scrollbar-width:thin}
+.capi-chat::-webkit-scrollbar{width:4px}
+.capi-chat::-webkit-scrollbar-thumb{background:var(--line2,#333);border-radius:2px}
+.capi-input{outline:none}
+.capi-input:focus{border-color:var(--violet,#6342ff)}

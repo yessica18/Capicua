@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>404 — Ruta Cósmica No Encontrada | CAPICÚA 888</title>
+  <link rel="icon" href="capi-logo.png" type="image/png">
+  <style>
+    :root {
+      --bg: #1a1040;
+      --card: rgba(40, 25, 90, 0.75);
+      --violet: #8b3dff;
+      --pink: #ff3d9a;
+      --yellow: #ffd700;
+      --cyan: #00e5ff;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 30%, #301868, #0b0520 80%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Quicksand", sans-serif;
+      color: #fff;
+      text-align: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+    .card-404 {
+      background: var(--card);
+      border: 2px solid rgba(139, 61, 255, 0.4);
+      border-radius: 28px;
+      padding: 3rem 2rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 61, 255, 0.25);
+      backdrop-filter: blur(16px);
+      animation: popIn 0.5s cubic-bezier(0.2, 1.4, 0.4, 1);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .capi-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid var(--cyan);
+      box-shadow: 0 0 30px var(--violet);
+      margin: 0 auto 1.5rem;
+      animation: floatCapi 3.5s ease-in-out infinite;
+      object-fit: cover;
+    }
+    @keyframes floatCapi {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    h1 {
+      font-size: 3.5rem;
+      margin: 0;
+      background: linear-gradient(90deg, var(--yellow), var(--pink), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+    p {
+      color: #d1c8f5;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin: 1rem 0 2rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 2rem;
+      background: linear-gradient(135deg, var(--violet), var(--pink));
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(255, 61, 154, 0.4);
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 10px 28px rgba(255, 61, 154, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="card-404">
+    <img src="capi-logo.png" alt="Capi 888" class="capi-avatar">
+    <h1>404</h1>
+    <h2 style="margin:.3rem 0;font-size:1.4rem;color:#ffd700;">¡Coordenadas Cósmicas No Encontradas!</h2>
+    <p>
+      Parece que esta lección o planeta se ha movido por el hiperespacio. No te preocupes, Capi te guía de vuelta al mapa de mundos.
+    </p>
+    <a href="/#mapa" class="btn">🚀 Regresar al Universo CAPICÚA</a>
+  </div>
+</body>
+</html>

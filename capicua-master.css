@@ -1,0 +1,743 @@
+/* ========================================================
+   CAPICÚA 888 - MASTER EXPANSION STYLES
+   Multiplayer Rooms, Capi Math AI, Exams (PDF/IMG/TXT),
+   Ambient Sound, 3D Hub, Chat & Notifications, Running Capi
+   ======================================================== */
+
+/* --- 1. RUNNING CAPI (Capi Corriendo en la interfaz) --- */
+#capi-runner-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(90deg, rgba(30,16,80,0.88), rgba(75,31,209,0.85), rgba(30,16,80,0.88));
+  border-top: 2px solid rgba(95, 211, 240, 0.45);
+  backdrop-filter: blur(12px);
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+  pointer-events: auto;
+  user-select: none;
+}
+@media (max-width: 860px) {
+  #capi-runner-bar {
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+    height: 42px;
+  }
+}
+.cr-track {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  overflow: hidden;
+  flex: 1;
+}
+.cr-runner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  animation: crBounce 0.45s ease-in-out infinite alternate;
+  flex-shrink: 0;
+}
+.cr-avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #5fd3f0;
+  box-shadow: 0 0 12px rgba(95, 211, 240, 0.6);
+  object-fit: cover;
+  animation: crRunTilt 0.45s ease-in-out infinite alternate;
+}
+.cr-speech {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1150;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px 12px 12px 2px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  white-space: nowrap;
+  animation: crSpeechFade 6s ease-in-out infinite;
+  max-width: 480px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cr-particles {
+  display: flex;
+  gap: 0.5rem;
+  font-family: var(--f-math);
+  color: #5fd3f0;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+.cr-particles span {
+  display: inline-block;
+  animation: crPartFloat 2.2s linear infinite;
+}
+.cr-particles span:nth-child(2) { animation-delay: 0.5s; color: #ff5c93; }
+.cr-particles span:nth-child(3) { animation-delay: 1.1s; color: #ffd23f; }
+.cr-particles span:nth-child(4) { animation-delay: 1.6s; color: #a8f3a0; }
+.cr-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+@keyframes crBounce {
+  from { transform: translateY(2px); }
+  to { transform: translateY(-4px); }
+}
+@keyframes crRunTilt {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
+}
+@keyframes crPartFloat {
+  0% { transform: translateX(0) scale(0.8); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(-35px) translateY(-8px) scale(1.1); opacity: 0; }
+}
+@keyframes crSpeechFade {
+  0%, 100% { opacity: 0.95; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+/* --- 2. AMBIENT SOUND CONTROLLER --- */
+.ambient-ctrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ambient-ctrl:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #5fd3f0;
+}
+.ambient-ctrl.playing {
+  border-color: #5fd3f0;
+  box-shadow: 0 0 14px rgba(95, 211, 240, 0.45);
+}
+.amb-waves {
+  display: inline-flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 12px;
+}
+.amb-waves i {
+  width: 2.5px;
+  background: #5fd3f0;
+  border-radius: 2px;
+  height: 4px;
+}
+.ambient-ctrl.playing .amb-waves i {
+  animation: ambWave 0.8s ease-in-out infinite alternate;
+}
+.ambient-ctrl.playing .amb-waves i:nth-child(2) { animation-delay: 0.2s; }
+.ambient-ctrl.playing .amb-waves i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ambWave {
+  from { height: 3px; }
+  to { height: 13px; }
+}
+
+/* --- 3. STARTUP INTRO CAPI LOGO ENHANCEMENT --- */
+.intro-capi-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.intro-capi-3d-wrap {
+  position: relative;
+  width: min(520px, 92vw);
+  height: 270px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+.intro-capi-stage-canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.intro-luminous-pedestal {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 230px;
+  height: 42px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(95, 211, 240, 0.9) 0%, rgba(139, 61, 255, 0.6) 45%, transparent 75%);
+  box-shadow: 0 0 50px rgba(95, 211, 240, 0.9), 0 0 100px rgba(139, 61, 255, 0.6);
+  pointer-events: none;
+  animation: pedestalPulse 3s ease-in-out infinite alternate;
+}
+@keyframes pedestalPulse {
+  0% { transform: translateX(-50%) scale(0.92); opacity: 0.75; box-shadow: 0 0 35px rgba(95,211,240,0.7); }
+  100% { transform: translateX(-50%) scale(1.08); opacity: 1; box-shadow: 0 0 65px rgba(95,211,240,1), 0 0 115px rgba(139,61,255,0.85); }
+}
+.intro-capi-circle {
+  width: 175px;
+  height: 175px;
+  border-radius: 50%;
+  border: 4px solid #5fd3f0;
+  box-shadow: 0 0 35px #8b3dff, 0 0 70px #5fd3f0;
+  object-fit: cover;
+  animation: introPulse 3s ease-in-out infinite alternate;
+}
+.intro-badge-888 {
+  background: linear-gradient(135deg, #2b1b86, #8b3dff);
+  color: #fff;
+  border: 2px solid #5fd3f0;
+  border-radius: 999px;
+  padding: 0.2rem 1.1rem;
+  font-family: var(--f-title);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  margin-top: -14px;
+  z-index: 5;
+}
+@keyframes introPulse {
+  0% { transform: scale(0.97); filter: drop-shadow(0 0 15px #8b3dff); }
+  100% { transform: scale(1.03); filter: drop-shadow(0 0 35px #5fd3f0); }
+}
+
+/* --- 4. MULTIPLAYER ROOMS (SALAS CON AMIGOS) --- */
+.room-hub {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.room-header {
+  background: linear-gradient(135deg, rgba(75, 31, 209, 0.4), rgba(255, 61, 154, 0.25));
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+.room-card {
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  border-radius: 20px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow);
+}
+.room-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--violet);
+}
+.room-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.room-badge.open { background: rgba(124, 240, 106, 0.2); color: #7cf06a; }
+.room-badge.playing { background: rgba(255, 122, 26, 0.2); color: #ff9a3d; }
+.lobby-roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+}
+.lobby-player {
+  background: var(--panel2);
+  border: 1.5px solid var(--line2);
+  border-radius: 18px;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  position: relative;
+}
+.lobby-player.me {
+  border-color: #5fd3f0;
+  box-shadow: 0 0 15px rgba(95, 211, 240, 0.3);
+}
+.lobby-player .ready-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+.lobby-player.ready .ready-badge {
+  background: rgba(124, 240, 106, 0.25);
+  color: #7cf06a;
+}
+.duel-arena {
+  background: radial-gradient(circle at 50% 20%, rgba(139, 61, 255, 0.3), transparent 70%), var(--solid);
+  border: 2px solid var(--line2);
+  border-radius: 24px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.duel-scoreboard {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  background: var(--panel2);
+  border-radius: 18px;
+  padding: 0.8rem 1rem;
+}
+.duel-score-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.duel-score-val {
+  font-family: var(--f-title);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #ffd23f;
+}
+
+/* --- 5. EXAM SIMULATOR WITH PDF / IMAGE / TEXT --- */
+.sim-uploader {
+  border: 2px dashed var(--line2);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: var(--panel2);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sim-uploader:hover, .sim-uploader.dragover {
+  border-color: #5fd3f0;
+  background: rgba(95, 211, 240, 0.08);
+}
+.sim-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.sim-tab-btn {
+  padding: 0.55rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line2);
+  background: var(--panel);
+  color: var(--fg2);
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+.sim-tab-btn.active {
+  background: var(--candy);
+  color: #fff;
+  border-color: transparent;
+}
+.sim-preview-box {
+  max-height: 200px;
+  overflow: auto;
+  padding: 0.8rem;
+  border-radius: 12px;
+  background: var(--solid);
+  font-family: monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  border: 1px solid var(--line);
+}
+.sim-exam-card {
+  background: var(--panel);
+  border: 2px solid var(--line2);
+  border-radius: 24px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  box-shadow: var(--shadow);
+}
+.sim-timer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 61, 154, 0.2);
+  border: 1px solid rgba(255, 61, 154, 0.5);
+  font-family: var(--f-math);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ff7aa8;
+}
+
+/* --- 6. CAPI MATH AI AGENT VIEW --- */
+.capi-ai-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .capi-ai-container { grid-template-columns: 1fr; }
+}
+.capi-chat-pane {
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  border-radius: 24px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 540px;
+  box-shadow: var(--shadow);
+}
+.capi-chat-feed {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-right: 0.35rem;
+}
+.capi-msg-ai {
+  align-self: flex-start;
+  max-width: 90%;
+  background: var(--panel2);
+  border: 1px solid rgba(139, 61, 255, 0.35);
+  border-radius: 18px 18px 18px 4px;
+  padding: 0.9rem 1.1rem;
+  line-height: 1.6;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.capi-msg-user {
+  align-self: flex-end;
+  max-width: 85%;
+  background: linear-gradient(135deg, #7b3cf0, #ff3d9a);
+  color: #fff;
+  border-radius: 18px 18px 4px 18px;
+  padding: 0.8rem 1rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 15px rgba(123, 60, 240, 0.35);
+}
+.capi-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+.capi-tool-card {
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: var(--panel2);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+.capi-tool-card:hover {
+  border-color: #5fd3f0;
+  transform: translateY(-2px);
+  background: var(--glow);
+}
+
+/* --- 7. NOTIFICATION BADGES & TOASTS --- */
+.notif-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #ff3d9a;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 0 4px;
+  box-shadow: 0 0 8px rgba(255, 61, 154, 0.8);
+  margin-left: 0.3rem;
+}
+.notif-banner {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: var(--solid);
+  border: 2px solid #5fd3f0;
+  border-radius: 18px;
+  padding: 0.85rem 1.15rem;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  animation: notifSlideIn 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+  max-width: 380px;
+}
+@keyframes notifSlideIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* --- 8. 3D HUB & GALLERIES --- */
+.threed-hub-stage {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 2px solid var(--line2);
+  background: radial-gradient(circle at 50% 50%, rgba(139, 61, 255, 0.25), rgba(15, 10, 45, 0.85));
+  position: relative;
+  min-height: 380px;
+}
+.threed-controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(15, 10, 45, 0.75);
+  backdrop-filter: blur(10px);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* --- 9. ACCOUNT MODAL & MANAGER --- */
+.acct-card {
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: var(--shadow);
+}
+.acct-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.acct-ava {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #5fd3f0;
+  box-shadow: 0 0 20px rgba(95, 211, 240, 0.5);
+  object-fit: cover;
+}
+.acct-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.75rem;
+}
+.acct-stat-box {
+  background: var(--panel2);
+  border-radius: 14px;
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid var(--line);
+}
+.acct-stat-box b {
+  display: block;
+  font-family: var(--f-title);
+  font-size: 1.3rem;
+  color: #ffd23f;
+}
+
+/* --- 10. MULTIPLAYER ROOMS (TIMER, COOP BOSS & TIE-BREAKER) --- */
+.duel-timer-wrap {
+  width: 100%;
+  margin: 0.5rem 0;
+}
+.duel-timer-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+.duel-timer-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+.dt-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #1fd1c1, #5fd3f0);
+  border-radius: 999px;
+  transition: width 0.3s linear, background-color 0.3s;
+}
+.dt-fill.warning {
+  background: linear-gradient(90deg, #ffc81a, #ff7a1a);
+}
+.dt-fill.danger {
+  background: linear-gradient(90deg, #ff3d6a, #ff1744);
+  animation: pulseDanger 0.5s infinite alternate;
+}
+@keyframes pulseDanger {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.4); }
+}
+.coop-boss-card {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 61, 106, 0.2), rgba(20, 10, 35, 0.85));
+  border: 2px solid #ff3d6a;
+  border-radius: 20px;
+  padding: 1.2rem;
+  text-align: center;
+  margin: 0.8rem 0;
+}
+.boss-hp-bar {
+  width: 100%;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 999px;
+  border: 1px solid #ff3d6a;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+.boss-hp-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #ff3d6a, #ff7ab8);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+.tiebreak-banner {
+  background: linear-gradient(135deg, #ffc81a, #ff3d9a);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 16px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(255, 200, 26, 0.6);
+  animation: tiebreakGlow 1s infinite alternate;
+}
+@keyframes tiebreakGlow {
+  from { transform: scale(0.98); box-shadow: 0 0 15px rgba(255, 200, 26, 0.5); }
+  to { transform: scale(1.02); box-shadow: 0 0 35px rgba(255, 61, 154, 0.8); }
+}
+.mode-badge-pvp {
+  background: linear-gradient(135deg, #7b3cf0, #ff3d9a);
+  color: #fff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.mode-badge-coop {
+  background: linear-gradient(135deg, #1fd1c1, #2f6bff);
+  color: #fff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* --- 11. VICTORY, DANCING CAPI & EVOLVING CHEST SURPRISE --- */
+.victory-avatar.dancing {
+  animation: victoryAvatarDance 0.65s ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+@keyframes victoryAvatarDance {
+  0% { transform: translateY(0) rotate(-6deg) scale(1); }
+  50% { transform: translateY(-16px) rotate(0deg) scale(1.05); }
+  100% { transform: translateY(0) rotate(6deg) scale(1); }
+}
+
+.cf-dance {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin: 0.2rem 0 0.5rem;
+}
+.cf-d {
+  animation: cfdance .85s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+@keyframes cfdance {
+  0% { transform: rotate(-12deg) translateY(0); }
+  25% { transform: rotate(0) translateY(-18px) scaleY(1.06); }
+  50% { transform: rotate(12deg) translateY(0); }
+  75% { transform: rotate(0) translateY(-18px) scaleY(1.06); }
+  100% { transform: rotate(-12deg) translateY(0); }
+}
+.cf-dance .n {
+  font-size: 1.8rem;
+  animation: cfnote 1.3s ease-in-out infinite;
+  color: #ffd54f;
+  text-shadow: 0 0 10px rgba(255, 213, 79, 0.7);
+}
+.cf-dance .n2 { animation-delay: .3s; color: #ff3d9a; }
+.cf-dance .n3 { animation-delay: .6s; color: #00e5ff; }
+.cf-dance .n4 { animation-delay: .9s; color: #2ecc71; }
+@keyframes cfnote {
+  0%, 100% { transform: translateY(0) scale(0.9); opacity: 0.4; }
+  50% { transform: translateY(-18px) scale(1.2); opacity: 1; }
+}
+
+.victory-rings {
+  position: absolute;
+  inset: -15px;
+  pointer-events: none;
+}
+.victory-rings .ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 50%;
+  animation: ringPulse 2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+.victory-rings .ring:nth-child(2) { animation-delay: 0.6s; border-color: rgba(99, 66, 255, 0.4); }
+.victory-rings .ring:nth-child(3) { animation-delay: 1.2s; border-color: rgba(255, 61, 154, 0.4); }
+@keyframes ringPulse {
+  0% { transform: scale(0.7); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes victoryPop {
+  from { opacity: 0; transform: scale(0.75) translateY(30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+

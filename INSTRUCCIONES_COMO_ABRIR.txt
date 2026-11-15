@@ -1,0 +1,80 @@
+================================================================================
+   CAPICÚA 888 - GUÍA RÁPIDA PARA ABRIR Y PROBAR LA PLATAFORMA
+================================================================================
+
+¡Bienvenido a CAPICÚA 888! La plataforma educativa 3D para aprender matemáticas
+con Capi como tutora autónoma de Inteligencia Artificial.
+
+--------------------------------------------------------------------------------
+¿CÓMO ABRIR LA PÁGINA? (3 Métodos muy fáciles)
+--------------------------------------------------------------------------------
+
+MÉTODO 1: DOBLE CLIC EN EL LANZADOR (El más rápido y recomendado)
+  1. En esta carpeta, busca el archivo: "ABRIR_CAPICUA.bat"
+  2. Haz doble clic sobre él.
+  3. ¡Listo! Se iniciará automáticamente la plataforma en tu navegador.
+
+MÉTODO 2: ABRIR DIRECTAMENTE EL NAVEGADOR
+  1. Haz doble clic sobre el archivo: "index.html"
+  2. Se abrirá de inmediato en Chrome, Edge, Firefox, Brave o Safari.
+  3. No requiere internet para funcionar (funciona 100% offline).
+
+MÉTODO 3: CON SERVIDOR LOCAL (Para desarrollo o pruebas en red local)
+  1. Abre una terminal en esta carpeta.
+  2. Ejecuta: node server.js
+  3. Abre en tu navegador la dirección: http://localhost:8088
+
+--------------------------------------------------------------------------------
+¿QUÉ VAS A PROBAR EN LA PÁGINA?
+--------------------------------------------------------------------------------
+
+1. LOGOTIPO Y FAVICON OFICIAL:
+   - Verás a Capi con sus ojos dorados, estrellas en el cabello y placa 888.
+
+2. CAPI CORRIENDO EN LA PANTALLA:
+   - En la parte inferior verás la barra interactiva con Capi trotando,
+     soltando partículas de fórmulas (π, √x, ∞, ∑) y dándote consejos.
+   - Haz clic sobre Capi para verla saltar y ganar +5 XP.
+
+3. SONIDO AMBIENTE Y SFX:
+   - En la esquina superior derecha encontrarás el botón de sonido con ondas.
+   - Activa la música ambiente relajante Lo-Fi espacial y escucha los efectos
+     sonoros al responder preguntas o interactuar con el juego.
+
+4. CAPI IA - AGENTE MATEMÁTICO INDEPENDIENTE:
+   - Entra en el menú a "Capi IA".
+   - Puedes escribir cualquier problema:
+     * Ecuaciones lineales: "3x + 15 = 45"
+     * Cuadráticas: "x^2 - 7x + 10 = 0"
+     * Derivadas: "derivada de 4x^3"
+     * Pitágoras: "pitágoras a=6 b=8"
+     * Fracciones, integrales y problemas verbales.
+   - Capi te responderá con la solución paso a paso y puedes escuchar su voz.
+
+5. SIMULACROS DE EXÁMENES CON PDF, IMÁGENES Y TEXTO:
+   - Entra en el menú a "Simulacros".
+   - Pestaña "Subir PDF": Arrastra tu guía o parcial en PDF.
+   - Pestaña "Subir Imagen": Sube una foto de tu cuaderno o ejercicio.
+   - Pestaña "Pegar Texto": Pega tus notas o apuntes.
+   - Haz clic en "Generar Simulacro" y realiza el examen cronometrado con
+     calificación inmediata y revisión de cada ejercicio.
+
+6. SALAS MULTIJUGADOR CON AMIGOS:
+   - Entra a "Salas con Amigos".
+   - Puedes crear una sala nueva o unirte con código.
+   - Si abres la página en dos pestañas o ventanas distintas, ¡verás cómo
+     se sincronizan los jugadores y compiten en tiempo real!
+   - También puedes competir contra bots inteligentes (Hipatia, Gauss, Euler).
+
+7. AVATARES 3D, MENTORES Y ENEMIGOS:
+   - "Avatares 3D": Rota a tu personaje en 360°, cambia trajes y peinados.
+   - "Mentores 3D": Explora a los sabios de la historia (Euler, Hipatia, Gauss).
+   - "Enemigos 3D": Bestiario con los jefes matemáticos (Aritmetrón, Algébrix).
+
+8. GUARDADO AUTOMÁTICO DE TU CUENTA:
+   - En "Mi Cuenta" puedes registrarte, iniciar sesión o descargar tu respaldo
+     en JSON. Tu nivel, XP, monedas π y récord quedan siempre guardados.
+
+================================================================================
+¡Disfruta aprendiendo con CAPICÚA 888!
+================================================================================

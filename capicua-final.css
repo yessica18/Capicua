@@ -1,0 +1,26 @@
+.cf-intro{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:radial-gradient(ellipse at 30% 20%,#2b1b86,#0b0630 70%);color:#fff;text-align:center;transition:opacity .5s;overflow:hidden}
+.cf-intro.out{opacity:0;pointer-events:none}
+.cf-skip{position:absolute;top:14px;right:14px}
+.cf-hero{max-width:640px;padding:1.5rem;display:grid;gap:.6rem;justify-items:center}
+.cf-ava{border-radius:50%;box-shadow:0 0 40px #8b3dff}.cf-sub{letter-spacing:.3em;font-weight:700}
+.cf-txt{max-width:46ch;opacity:.85}.cf-ps{font:.6rem "Press Start 2P",monospace;color:#ffd54f;animation:cfb 1s steps(2) infinite}
+.cf-run{position:absolute;bottom:4vh;right:0;display:flex;align-items:flex-end;gap:.5rem;animation:cfrun 2.4s ease-out both}
+.cf-capi{animation:cfhop .32s ease-in-out 8,cfidle 1.6s ease-in-out 2.6s infinite}
+.cf-bub{background:#fff;color:#1a1150;border-radius:16px;padding:.6rem .9rem;max-width:230px;font-weight:700;box-shadow:0 8px 24px #0006}
+@keyframes cfrun{from{transform:translateX(-90vw)}to{transform:translateX(-4vw)}}
+@keyframes cfhop{50%{transform:translateY(-22px) rotate(8deg)}}@keyframes cfidle{50%{transform:translateY(-6px)}}@keyframes cfb{50%{opacity:0}}
+.cf-dance{display:flex;justify-content:center;align-items:flex-end;gap:.6rem;margin:.2rem 0 .6rem}
+.cf-d{animation:cfdance .9s ease-in-out infinite;transform-origin:50% 100%}
+.cf-dance .n{font-size:1.6rem;animation:cfnote 1.4s ease-in-out infinite;color:#ffd54f}.cf-dance .n2{animation-delay:.3s}.cf-dance .n3{animation-delay:.6s}.cf-dance .n4{animation-delay:.9s}
+@keyframes cfdance{0%{transform:rotate(-12deg) translateY(0)}25%{transform:rotate(0) translateY(-18px) scaleY(1.06)}50%{transform:rotate(12deg) translateY(0)}75%{transform:rotate(0) translateY(-18px) scaleY(1.06)}100%{transform:rotate(-12deg) translateY(0)}}
+@keyframes cfnote{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-14px);opacity:1}}
+.cf-pay{display:grid;gap:.7rem}.cf-pay select{width:100%;padding:.5rem;border-radius:10px}
+.cf-meth{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.5rem}
+.cf-m{padding:.7rem;border-radius:12px;border:2px solid #fff6;background:transparent;color:inherit;font-weight:700;cursor:pointer}.cf-m.on{border-color:#ff8a65;background:#ff8a6533}
+.cf-dest,.cf-note{border:1px dashed #fff7;border-radius:12px;padding:.6rem;font-size:.85rem}.cf-tot b{font-size:1.3rem}
+.cf-tbl{max-height:40vh;overflow:auto;font-size:.8rem}.cf-hist{margin:.4rem 0}
+.cf-grp{margin:.2rem 0}.cf-grp>summary{cursor:pointer;font:700 .68rem Quicksand,sans-serif;letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding:.45rem .7rem;list-style:none}
+.cf-grp>summary::-webkit-details-marker{display:none}
+.cf-mic{position:fixed;left:14px;bottom:14px;z-index:900;border:0;border-radius:999px;padding:.6rem .9rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#8b3dff,#ff3d9a);box-shadow:0 6px 20px #0006;cursor:pointer}
+@media(max-width:900px){.cf-mic span{display:none}.cf-mic{bottom:76px}}
+@media(prefers-reduced-motion:reduce){.cf-run,.cf-capi,.cf-d,.cf-dance .n{animation:none}}
