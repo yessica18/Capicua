@@ -1,6 +1,6 @@
 // CAPICÚA — Service worker: abre al instante en visitas repetidas y funciona sin conexión.
 // Todas las rutas son relativas para que funcione bajo https://yessica18.github.io/Capi2/
-const V = 'capicua-2.0.0';
+const V = 'capicua-2.0.1';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'capicua-plus.css?v=2.0.0', 'capicua-plus.js?v=2.0.0', 'marca/capia-icono.svg', 'marca/icon-192.png'];
 self.addEventListener('install', (e) => {
   // Cada archivo se guarda por separado: si uno falla, el resto igual queda en caché.
@@ -13,5 +13,5 @@ self.addEventListener('fetch', (e) => {
   if (req.mode === 'navigate') { e.respondWith(fetch(req).then(r => { const cl = r.clone(); caches.open(V).then(c => c.put('index.html', cl)); return r; }).catch(() => caches.match('index.html'))); return; }
   const isAsset = url.origin === location.origin || /fonts\.(googleapis|gstatic)\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net/.test(url.host);
   if (!isAsset) return;
-  e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => { if (r.ok || r.type === 'opaque') { const cl = r.clone(); caches.open(V).then(c => c.put(req, cl)); } return r; })));
+  e.respondWith(caches.match(req).then(hit => { const net = fetch(req).then(r => { if (r.ok || r.type === 'opaque') { const cl = r.clone(); caches.open(V).then(c => c.put(req, cl)); } return r; }).catch(() => hit); return hit || net; }));
 });
