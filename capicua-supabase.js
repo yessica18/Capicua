@@ -327,11 +327,48 @@ const CapiSupa={
 };
 window.CapiSupa=CapiSupa;
 
-// Auto-init when DOM ready
+/* ── Consent gate ──
+   "Rechazar" en el banner de cookies (capicua-consent='0') desactiva
+   la conexion a la nube por defecto: el progreso solo se guarda local.
+   Si el usuario decide iniciar sesion manualmente mas tarde, se activa
+   la conexion en ese momento (accion explicita). */
+function hasCloudConsent(){
+  return localStorage.getItem("capicua-consent")!=="0";
+}
+
+let initStarted=false;
+function startInit(){
+  if(initStarted)return ready;
+  initStarted=true;
+  return init().then(hookSave);
+}
+
+const origShowAuthModal=showAuthModal;
+CapiSupa.showAuthModal=function(){
+  if(!initStarted){
+    const ui=window.CapUI;
+    if(ui&&ui.toast)ui.toast("Un momento","Conectando con tu cuenta...","i");
+    startInit().then(()=>{
+      if(!CapiSupa.available&&ui&&ui.toast){
+        ui.toast("Sin conexion","No se pudo conectar. Intenta de nuevo en unos segundos.","!");
+        return;
+      }
+      origShowAuthModal();
+    });
+    return;
+  }
+  origShowAuthModal();
+};
+
+// Auto-init when DOM ready, solo si hay consentimiento (o aun no se ha decidido)
+function boot(){
+  if(hasCloudConsent())startInit();
+  else readyResolve(false);
+}
 if(document.readyState==="loading"){
-  document.addEventListener("DOMContentLoaded",()=>{init().then(hookSave)});
+  document.addEventListener("DOMContentLoaded",boot);
 }else{
-  init().then(hookSave);
+  boot();
 }
 
 })();
