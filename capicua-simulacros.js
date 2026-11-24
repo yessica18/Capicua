@@ -68,15 +68,15 @@
         {q:"3! + 4! = ?", opts:["30","28","26","32"], c:0, dif:3},
         {q:"Fraccion de 0.375", opts:["3/8","3/4","5/8","2/5"], c:0, dif:2}
       ],
-      algebra_baldor_geometrica: [
-        {q:"(a + b)² según Baldor e interpretación geométrica de áreas:", opts:["a² + 2ab + b² (un cuadrado a², 2 rectángulos ab y un cuadrado b²)","a² + b² (suma de dos cuadrados)","a² + ab + b²","2a + 2b (perímetro)"], c:0, dif:1},
-        {q:"Diferencia de cuadrados (Baldor Caso IV) x² - 9 factorizada por disección geométrica:", opts:["(x + 3)(x - 3)","(x - 3)²","x(x - 9)","(x + 9)(x - 1)"], c:0, dif:1},
-        {q:"Si 3x + 7 = 22, despejar x mediante la balanza algebraica:", opts:["5","4","6","3"], c:0, dif:1},
-        {q:"Factorizar el trinomio de la forma x² - 5x + 6 como lados de un rectángulo:", opts:["(x - 2)(x - 3)","(x - 1)(x - 6)","(x + 2)(x + 3)","(x - 2)(x + 3)"], c:0, dif:2},
-        {q:"Completación del cuadrado de Al-Jwarizmi para x² + 8x: ¿qué área falta para cerrar el cuadrado?", opts:["16 (un cuadrado de (8/2)²)","64","8","4"], c:0, dif:2},
-        {q:"Volumen 3D del binomio al cubo (a + b)³:", opts:["a³ + 3a²b + 3ab² + b³ (8 prismas en total)","a³ + b³","a³ + 3ab + b³","3a³ + 3b³"], c:0, dif:2},
-        {q:"Geométricamente, la solución de un sistema lineal 2x2 compatible determinado representa:", opts:["El punto único donde se intersecan dos rectas en el plano","Dos rectas paralelas que nunca se cruzan","La misma recta superpuesta","El área bajo una curva"], c:0, dif:2},
-        {q:"Pendiente m de la recta 2x - y = 5:", opts:["2","-2","5","1/2"], c:0, dif:1}
+      algebra: [
+        {q:"Si 3x + 7 = 22, x = ?", opts:["5","4","6","3"], c:0, dif:1},
+        {q:"(x+3)(x-3) = ?", opts:["x^2 - 9","x^2 + 9","x^2 - 6x","x^2 + 6"], c:0, dif:2},
+        {q:"Factorizar x^2 - 5x + 6", opts:["(x-2)(x-3)","(x-1)(x-6)","(x+2)(x+3)","(x-2)(x+3)"], c:0, dif:2},
+        {q:"log_2(32) = ?", opts:["5","4","6","3"], c:0, dif:2},
+        {q:"Si f(x) = 2x^2 - 3, f(2) = ?", opts:["5","7","3","1"], c:0, dif:2},
+        {q:"Suma de raices de x^2 - 7x + 12 = 0", opts:["7","12","3","4"], c:0, dif:3},
+        {q:"|-5| + |3| = ?", opts:["8","2","-2","15"], c:0, dif:1},
+        {q:"3^0 + 5^0 = ?", opts:["2","0","1","6"], c:0, dif:1}
       ],
       calculo: [
         {q:"d/dx (x^3) = ?", opts:["3x^2","x^2","3x^3","2x^3"], c:0, dif:1},
@@ -394,27 +394,15 @@
 
       /* Materia selector */
       html += '<div class="grid" style="margin-top:1rem">';
-      var icons = {aritmetica:"#",algebra:"x",algebra_baldor_geometrica:"x²",calculo:"dx",trigonometria:"sin",geometria:"tri",fisica:"F",algebra_lineal:"Ax",estadistica:"mu",quimica:"At"};
-      var colors = {aritmetica:"#3498db",algebra:"#9b59b6",algebra_baldor_geometrica:"#8e44ad",calculo:"#e67e22",trigonometria:"#2ecc71",geometria:"#e74c3c",fisica:"#f39c12",algebra_lineal:"#1abc9c",estadistica:"#e91e63",quimica:"#00bcd4"};
-      var matLabels = {
-        algebra_baldor_geometrica: "Álgebra de Baldor y Geométrica",
-        algebra: "Álgebra de Baldor y Geométrica",
-        algebra_lineal: "Álgebra Lineal",
-        aritmetica: "Aritmética",
-        calculo: "Cálculo",
-        trigonometria: "Trigonometría",
-        geometria: "Geometría",
-        fisica: "Física",
-        estadistica: "Estadística",
-        quimica: "Química"
-      };
+      var icons = {aritmetica:"#",algebra:"x",calculo:"dx",trigonometria:"sin",geometria:"tri",fisica:"F",algebra_lineal:"Ax",estadistica:"mu",quimica:"At"};
+      var colors = {aritmetica:"#3498db",algebra:"#9b59b6",calculo:"#e67e22",trigonometria:"#2ecc71",geometria:"#e74c3c",fisica:"#f39c12",algebra_lineal:"#1abc9c",estadistica:"#e91e63",quimica:"#00bcd4"};
 
       for(var i=0;i<MATERIAS.length;i++){
         var mat = MATERIAS[i];
         var diagLevel = S.diagnostico && S.diagnostico.levels && S.diagnostico.levels[mat];
         html += '<div class="card click exam-start" data-mat="' + mat + '">';
-        html += '<div class="glyph" style="width:48px;height:48px;background:' + (colors[mat] || '#8b3dff') + ';font-size:1rem;color:#fff;margin:0 auto">' + (icons[mat] || 'fx') + '</div>';
-        html += '<div class="h3" style="text-align:center;font-size:.9rem">' + (matLabels[mat] || mat.replace(/_/g,' ')) + '</div>';
+        html += '<div class="glyph" style="width:48px;height:48px;background:' + colors[mat] + ';font-size:1rem;color:#fff;margin:0 auto">' + icons[mat] + '</div>';
+        html += '<div class="h3" style="text-align:center;text-transform:capitalize;font-size:.9rem">' + mat.replace(/_/g,' ') + '</div>';
         if(diagLevel) html += '<div class="small" style="text-align:center"><span class="chip sm">' + diagLevel + '</span></div>';
         html += '<div class="small muted" style="text-align:center">' + BANCO[mat].length + ' preguntas</div>';
         html += '<div class="row" style="justify-content:center;gap:.3rem;margin-top:.5rem">';
@@ -683,10 +671,15 @@
         return "Puedo ayudarte con: matematicas (derivadas, integrales, algebra...), fisica (Newton, energia...), programacion (complejidad, estructuras...), y mas. Tambien puedo ver tu progreso, recomendar temas, y hacer calculos. Preguntame lo que quieras!";
       }
 
-      /* Evaluador matemático seguro en sandbox (Sin new Function ni eval) */
-      var mathResult = safeEvalMath(msg);
-      if(mathResult !== null && typeof mathResult === "number" && isFinite(mathResult)){
-        return "= " + mathResult;
+      /* Math calculator */
+      if(msg.match(/^[\d\s\+\-\*\/\^\(\)\.]+$/)){
+        try{
+          var expr = msg.replace(/\^/g,"**");
+          var result = new Function("return " + expr)();
+          if(typeof result === "number" && isFinite(result)){
+            return "= " + result;
+          }
+        }catch(e){}
       }
 
       /* KB search */
@@ -710,158 +703,26 @@
       }
 
       /* Greetings */
-      if(msg.match(/^(hola|hey|hi|buenas|saludos|ey)/)) return "¡Hola! Soy Capi, tu tutora universitaria de matemáticas e ingeniería. ¿En qué tema trabajamos hoy?";
-      if(msg.match(/gracias|thx|genial/)) return "¡Con mucho gusto! Estoy aquí para acompañarte en tu aprendizaje. ¡Sigamos dominando retos!";
+      if(msg.match(/^(hola|hey|hi|buenas|saludos|ey)/)) return "Hola! Soy Capi, tu tutora de matematicas e ingenieria. En que te ayudo?";
+      if(msg.match(/gracias|thx|genial/)) return "De nada! Estoy aqui para ayudarte. Sigue aprendiendo!";
       if(msg.match(/chiste|broma|chistoso/)){
         var chistes = [
-          "¿Por qué el libro de matemáticas estaba triste? ¡Porque tenía demasiados problemas!",
-          "¿Qué le dijo la curva a la recta tangente? ¡No me toques solo en un punto!",
-          "¿Por qué los vectores son malos amigos? ¡Porque no tienen sentido ni dirección!",
-          "¿Qué hace un trinomio en el gimnasio? ¡Completar el cuadrado geométrico!"
+          "Por que el libro de mates estaba triste? Porque tenia muchos problemas!",
+          "Que le dijo la integral a la derivada? No me descompongas!",
+          "Por que el vector no fue a la fiesta? Porque no tenia la direccion!",
+          "Que hace un algebra en el gimnasio? Resuelve sus problemas!"
         ];
         return chistes[Math.floor(Math.random()*chistes.length)];
       }
 
-      /* Fallback educativo local */
-      return "Para ayudarte con la máxima precisión, cuéntame qué ejercicio o concepto tienes enfrente. Puedes preguntarme sobre derivadas, integrales, Álgebra de Baldor y Geométrica, física, circuitos o probabilidad.";
+      /* Fallback */
+      var fallbacks = [
+        "Interesante! Intenta preguntarme sobre derivadas, integrales, algebra, fisica, probabilidad, o cualquier tema de ingenieria.",
+        "No tengo esa respuesta exacta, pero puedo ayudarte con temas de matematicas, fisica y programacion. Que quieres aprender?",
+        "Prueba ser mas especifico! Ejemplo: 'que es una derivada', 'explica probabilidad', 'calcula 15*23'"
+      ];
+      return fallbacks[Math.floor(Math.random()*fallbacks.length)];
     }
-
-    /**
-     * Evaluador de expresiones matemáticas completamente seguro (Sandbox recursivo descendente)
-     * No utiliza eval() ni new Function(). Cumple con estándares OWASP y CSP.
-     */
-    function safeEvalMath(expr) {
-      if (!expr || typeof expr !== "string") return null;
-      var clean = expr.trim();
-      var tokens = [];
-      var i = 0;
-      while (i < clean.length) {
-        var ch = clean[i];
-        if (/\s/.test(ch)) { i++; continue; }
-        if (/[0-9.]/.test(ch)) {
-          var numStr = "";
-          while (i < clean.length && /[0-9.]/.test(clean[i])) { numStr += clean[i++]; }
-          var num = parseFloat(numStr);
-          if (isNaN(num)) return null;
-          tokens.push({ type: "num", val: num });
-          continue;
-        }
-        if (/[a-zA-Z]/.test(ch)) {
-          var word = "";
-          while (i < clean.length && /[a-zA-Z0-9_]/.test(clean[i])) { word += clean[i++]; }
-          word = word.toLowerCase();
-          if (word === "pi") tokens.push({ type: "num", val: Math.PI });
-          else if (word === "e") tokens.push({ type: "num", val: Math.E });
-          else if (["sqrt","sin","cos","tan","abs","log","ln","round","floor","ceil"].indexOf(word) !== -1) {
-            tokens.push({ type: "fn", val: word });
-          } else {
-            return null;
-          }
-          continue;
-        }
-        if ("+-*/%^()".indexOf(ch) !== -1) {
-          tokens.push({ type: "op", val: ch });
-          i++;
-          continue;
-        }
-        return null;
-      }
-      if (tokens.length === 0) return null;
-
-      var pos = 0;
-      function peek() { return tokens[pos]; }
-      function consume() { return tokens[pos++]; }
-
-      function parseExpr() {
-        var val = parseTerm();
-        while (peek() && peek().type === "op" && (peek().val === "+" || peek().val === "-")) {
-          var op = consume().val;
-          var next = parseTerm();
-          val = op === "+" ? val + next : val - next;
-        }
-        return val;
-      }
-
-      function parseTerm() {
-        var val = parsePow();
-        while (peek() && peek().type === "op" && (peek().val === "*" || peek().val === "/" || peek().val === "%")) {
-          var op = consume().val;
-          var next = parsePow();
-          if (op === "*") val *= next;
-          else if (op === "/") {
-            if (next === 0) throw new Error("División por cero");
-            val /= next;
-          } else if (op === "%") {
-            val %= next;
-          }
-        }
-        return val;
-      }
-
-      function parsePow() {
-        var val = parseUnary();
-        while (peek() && peek().type === "op" && peek().val === "^") {
-          consume();
-          var next = parseUnary();
-          val = Math.pow(val, next);
-        }
-        return val;
-      }
-
-      function parseUnary() {
-        var t = peek();
-        if (!t) throw new Error("Expresión incompleta");
-        if (t.type === "op" && t.val === "-") {
-          consume();
-          return -parseUnary();
-        }
-        if (t.type === "op" && t.val === "+") {
-          consume();
-          return parseUnary();
-        }
-        if (t.type === "fn") {
-          var fnName = consume().val;
-          if (!peek() || peek().val !== "(") throw new Error("Falta paréntesis");
-          consume();
-          var arg = parseExpr();
-          if (!peek() || peek().val !== ")") throw new Error("Falta cierre");
-          consume();
-          switch(fnName) {
-            case "sqrt": return Math.sqrt(arg);
-            case "abs": return Math.abs(arg);
-            case "sin": return Math.sin(arg);
-            case "cos": return Math.cos(arg);
-            case "tan": return Math.tan(arg);
-            case "log": return Math.log10 ? Math.log10(arg) : Math.log(arg)/Math.LN10;
-            case "ln": return Math.log(arg);
-            case "round": return Math.round(arg);
-            case "floor": return Math.floor(arg);
-            case "ceil": return Math.ceil(arg);
-            default: return arg;
-          }
-        }
-        if (t.type === "num") return consume().val;
-        if (t.type === "op" && t.val === "(") {
-          consume();
-          var inner = parseExpr();
-          if (!peek() || peek().val !== ")") throw new Error("Paréntesis sin cerrar");
-          consume();
-          return inner;
-        }
-        throw new Error("Token inesperado");
-      }
-
-      try {
-        var result = parseExpr();
-        if (pos < tokens.length) return null;
-        return typeof result === "number" && isFinite(result) ? result : null;
-      } catch(e) {
-        return null;
-      }
-    }
-
-    var capiConvHistory = [];
-    var capiCurrentMode = "aprender";
 
     function enhanceCapi(){
       var companion = document.getElementById("companion");
@@ -869,121 +730,31 @@
       var bubble = companion.querySelector(".bubble");
       if(!bubble || bubble.querySelector(".capi-input-wrap")) return;
 
-      var modeBar = document.createElement("div");
-      modeBar.className = "capi-modes";
-      modeBar.style.cssText = "display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;margin-bottom:6px";
-      modeBar.innerHTML = 
-        '<button class="chip sm capi-mode-btn on" data-mode="aprender" style="cursor:pointer;font-size:.7rem;padding:2px 6px">Aprender</button>' +
-        '<button class="chip sm capi-mode-btn" data-mode="resolver" style="cursor:pointer;font-size:.7rem;padding:2px 6px">Resolver</button>' +
-        '<button class="chip sm capi-mode-btn" data-mode="practicar" style="cursor:pointer;font-size:.7rem;padding:2px 6px">Practicar</button>' +
-        '<button class="chip sm capi-mode-btn" data-mode="evaluar" style="cursor:pointer;font-size:.7rem;padding:2px 6px">Evaluar</button>' +
-        '<button class="chip sm capi-mode-btn" data-mode="corregir" style="cursor:pointer;font-size:.7rem;padding:2px 6px">Corregir</button>' +
-        '<button class="chip sm capi-mode-btn" data-mode="repasar" style="cursor:pointer;font-size:.7rem;padding:2px 6px">Repasar</button>' +
-        '<button class="chip sm capi-mode-btn" data-mode="preparar_examen" style="cursor:pointer;font-size:.7rem;padding:2px 6px">Examen</button>';
-      bubble.appendChild(modeBar);
-
-      modeBar.querySelectorAll(".capi-mode-btn").forEach(function(btn){
-        btn.addEventListener("click", function(){
-          modeBar.querySelectorAll(".capi-mode-btn").forEach(function(b){ b.classList.remove("on"); });
-          btn.classList.add("on");
-          capiCurrentMode = btn.dataset.mode;
-        });
-      });
-
-      var chatArea = document.createElement("div");
-      chatArea.className = "capi-chat";
-      chatArea.style.cssText = "max-height:220px;overflow-y:auto;margin-bottom:8px;font-size:.85rem;line-height:1.4";
-      bubble.appendChild(chatArea);
-
       var inputWrap = document.createElement("div");
       inputWrap.className = "capi-input-wrap";
-      inputWrap.innerHTML = '<div style="display:flex;gap:4px;margin-top:4px">' +
-        '<input type="text" class="capi-input" placeholder="Pregúntale a Capi..." style="flex:1;padding:6px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);font-size:.85rem;min-height:32px;color:var(--fg)">' +
+      inputWrap.innerHTML = '<div style="display:flex;gap:4px;margin-top:8px">' +
+        '<input type="text" class="capi-input" placeholder="Preguntale a Capi..." style="flex:1;padding:6px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);font-size:.85rem;min-height:32px;color:var(--fg)">' +
         '<button class="btn sm capi-send" style="padding:4px 10px;min-height:32px">Enviar</button>' +
         '</div>';
       bubble.appendChild(inputWrap);
 
+      var chatArea = document.createElement("div");
+      chatArea.className = "capi-chat";
+      chatArea.style.cssText = "max-height:220px;overflow-y:auto;margin-bottom:8px;font-size:.85rem;line-height:1.4";
+      bubble.insertBefore(chatArea, inputWrap);
+
       var input = inputWrap.querySelector(".capi-input");
       var sendBtn = inputWrap.querySelector(".capi-send");
 
-      async function handleSend(){
+      function handleSend(){
         var msg = input.value.trim();
         if(!msg) return;
         input.value = "";
 
-        // Renderizar mensaje del estudiante
-        var userBubble = document.createElement("div");
-        userBubble.style.cssText = "text-align:right;margin:6px 0;padding:6px 10px;background:var(--violet);color:#fff;border-radius:12px 12px 2px 12px;display:inline-block;float:right;clear:both;max-width:85%;word-break:break-word";
-        userBubble.textContent = msg;
-        chatArea.appendChild(userBubble);
+        chatArea.innerHTML += '<div style="text-align:right;margin:6px 0;padding:4px 8px;background:var(--violet);color:#fff;border-radius:10px 10px 2px 10px;display:inline-block;float:right;clear:both;max-width:85%">' + msg + '</div><div style="clear:both"></div>';
 
-        var clearDiv = document.createElement("div");
-        clearDiv.style.clear = "both";
-        chatArea.appendChild(clearDiv);
-
-        // Indicador de Capi pensando
-        var thinkingBubble = document.createElement("div");
-        thinkingBubble.className = "capi-thinking";
-        thinkingBubble.style.cssText = "margin:6px 0;padding:6px 10px;background:var(--panel2,var(--panel));border-radius:12px 12px 12px 2px;display:inline-block;max-width:85%;font-style:italic;opacity:0.8";
-        thinkingBubble.innerHTML = '<span class="spinner" style="width:12px;height:12px;margin-right:6px"></span> Capi está pensando...';
-        chatArea.appendChild(thinkingBubble);
-        chatArea.scrollTop = chatArea.scrollHeight;
-
-        capiConvHistory.push({ sender: "user", text: msg });
-
-        var replyText = "";
-        var isOfflineNotice = false;
-        var localGuide = "";
-
-        try {
-          var payload = {
-            message: msg,
-            studentName: (t.S && t.S.name) || "Aventurero",
-            level: (t.level && t.level()) || 1,
-            mode: capiCurrentMode,
-            courseContext: "algebra-baldor-geom",
-            history: capiConvHistory
-          };
-
-          var res = await fetch("/api/capi-ask", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          }).catch(function() {
-            return fetch("/.netlify/functions/capi-ask", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload)
-            });
-          });
-
-          if (res && res.ok) {
-            var data = await res.json();
-            replyText = data.text || "";
-            isOfflineNotice = data.source === "offline-notice" || Boolean(data.offline);
-            localGuide = data.localFallback || "";
-          } else {
-            isOfflineNotice = true;
-          }
-        } catch(err) {
-          isOfflineNotice = true;
-        }
-
-        thinkingBubble.remove();
-
-        var capiBubble = document.createElement("div");
-        capiBubble.style.cssText = "margin:6px 0;padding:8px 10px;background:var(--panel2,var(--panel));border:1px solid var(--line);border-radius:12px 12px 12px 2px;display:inline-block;max-width:88%;word-break:break-word";
-
-        if (isOfflineNotice) {
-          capiBubble.innerHTML = '<div style="color:var(--warn,#f39c12);font-weight:700;margin-bottom:4px">⚠️ En este momento no puedo conectarme a mi sistema de inteligencia artificial. Inténtalo nuevamente más tarde.</div>' +
-            '<div style="font-size:.82rem;opacity:0.9;border-top:1px dashed var(--line);padding-top:4px"><small><b>Guía Pedagógica Local:</b></small><br>' + 
-            (localGuide || capiRespond(msg)) + '</div>';
-        } else {
-          capiBubble.innerHTML = replyText.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-          capiConvHistory.push({ sender: "capi", text: replyText });
-        }
-
-        chatArea.appendChild(capiBubble);
+        var response = capiRespond(msg);
+        chatArea.innerHTML += '<div style="margin:6px 0;padding:4px 8px;background:var(--panel2,var(--panel));border-radius:10px 10px 10px 2px;display:inline-block;max-width:85%">' + response + '</div>';
         chatArea.scrollTop = chatArea.scrollHeight;
 
         if(window.CapExtras && window.CapExtras.makeCapiDance) window.CapExtras.makeCapiDance();

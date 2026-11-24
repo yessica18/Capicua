@@ -198,62 +198,45 @@
     ui.views.recompensas = function(el){ renderEnganches(el); };
 
     /* ══════════════════════════════════════════════
-       3. PERSONALIZACIÓN DE AVATARES (Hombre / Mujer)
+       3. PERSONALIZACIÓN DE AVATARES
        ══════════════════════════════════════════════ */
     var AVATAR_ITEMS = {
       pelo: [
-        { id:"p_none", name:"Sin Cabello (Calvo)", gender:"unisex", svg:''},
-        { id:"p0", name:"Clásico", gender:"unisex", svg:'<circle cx="50" cy="22" r="18" fill="#6342ff"/>'},
-        { id:"p5", name:"Tupé Moderno", gender:"male", svg:'<path d="M28 32 Q26 8 50 10 Q74 8 72 32 Q62 18 50 18 Q38 18 28 32Z" fill="#1a1a1a"/>'},
-        { id:"p6", name:"Corto Clásico", gender:"male", svg:'<path d="M30 32 Q30 14 50 14 Q70 14 70 32 Q62 24 50 22 Q38 24 30 32Z" fill="#1a1a1a"/>'},
-        { id:"p7", name:"Undercut", gender:"male", svg:'<path d="M30 30 Q32 10 52 10 Q72 10 70 28 Q62 20 50 20 Q38 20 30 30Z" fill="#1a1a1a"/><path d="M30 32 L34 40 L38 36 Z M64 36 L68 40 L70 32 Z" fill="#1a1a1a" opacity=".6"/>'},
-        { id:"p1", name:"Punk", gender:"unisex", svg:'<path d="M32 25 Q50 -5 68 25" fill="#ff3d9a"/>'},
-        { id:"p2", name:"Largo", gender:"female", svg:'<ellipse cx="50" cy="30" rx="22" ry="25" fill="#ffd700"/>'},
-        { id:"p3", name:"Afro", gender:"unisex", svg:'<circle cx="50" cy="20" r="25" fill="#2ecc71"/>'},
-        { id:"p4", name:"Galáctico", gender:"female", svg:'<circle cx="50" cy="22" r="20" fill="url(#grad-hair)"/>'}
+        { id:"p0", name:"Clasico", svg:'<circle cx="50" cy="22" r="18" fill="#6342ff"/>'},
+        { id:"p1", name:"Punk", svg:'<path d="M32 25 Q50 -5 68 25" fill="#ff3d9a"/>'},
+        { id:"p2", name:"Largo", svg:'<ellipse cx="50" cy="30" rx="22" ry="25" fill="#ffd700"/>'},
+        { id:"p3", name:"Afro", svg:'<circle cx="50" cy="20" r="25" fill="#2ecc71"/>'},
+        { id:"p4", name:"Galactico", svg:'<circle cx="50" cy="22" r="20" fill="url(#grad-hair)"/>'}
       ],
       ropa: [
-        { id:"r0", name:"Camiseta", gender:"unisex", svg:'<rect x="32" y="60" width="36" height="25" rx="4" fill="#3498db"/>'},
-        { id:"r5", name:"Chaqueta Urbana", gender:"male", svg:'<rect x="30" y="58" width="40" height="28" rx="4" fill="#1a1a2e"/><rect x="42" y="58" width="16" height="28" fill="#3498db"/>'},
-        { id:"r6", name:"Traje Formal", gender:"male", svg:'<rect x="30" y="58" width="40" height="28" rx="4" fill="#2c3e50"/><polygon points="46,58 54,58 50,68" fill="#e74c3c"/>'},
-        { id:"r1", name:"Bata Lab", gender:"unisex", svg:'<rect x="30" y="58" width="40" height="30" rx="4" fill="#ecf0f1" stroke="#bdc3c7"/>'},
-        { id:"r2", name:"Hoodie", gender:"unisex", svg:'<rect x="30" y="58" width="40" height="28" rx="8" fill="#9b59b6"/>'},
-        { id:"r3", name:"Armadura", gender:"unisex", svg:'<rect x="32" y="58" width="36" height="28" rx="3" fill="#e67e22" stroke="#d35400"/>'},
-        { id:"r4", name:"Espacial", gender:"unisex", svg:'<rect x="30" y="56" width="40" height="32" rx="6" fill="#2c3e50"/><circle cx="50" cy="72" r="6" fill="#00e5ff"/>'}
-      ],
-      barba: [
-        { id:"b0", name:"Sin Barba / Afeitado", gender:"unisex", svg:''},
-        { id:"b1", name:"Bigote Sobre Labio", gender:"male", svg:'<path d="M41 43.5 Q46 41 50 43.5 Q54 41 59 43.5 Q55 45.2 50 44 Q45 45.2 41 43.5Z" fill="#1a1a1a"/>'},
-        { id:"b2", name:"Barba Candado", gender:"male", svg:'<path d="M41 43.5 Q46 41 50 43.5 Q54 41 59 43.5 Q55 45.2 50 44 Q45 45.2 41 43.5Z" fill="#1a1a1a"/><path d="M45 48 Q43 54 50 55 Q57 54 55 48 Q50 51 45 48Z" fill="#1a1a1a"/>'},
-        { id:"b3", name:"Barba Completa", gender:"male", svg:'<path d="M41 43.5 Q46 41 50 43.5 Q54 41 59 43.5 Q55 45.2 50 44 Q45 45.2 41 43.5Z" fill="#1a1a1a"/><path d="M36 44 Q34 58 50 60 Q66 58 64 44 Q61 55 50 56 Q39 55 36 44Z" fill="#1a1a1a"/>'}
+        { id:"r0", name:"Camiseta", svg:'<rect x="32" y="60" width="36" height="25" rx="4" fill="#3498db"/>'},
+        { id:"r1", name:"Bata Lab", svg:'<rect x="30" y="58" width="40" height="30" rx="4" fill="#ecf0f1" stroke="#bdc3c7"/>'},
+        { id:"r2", name:"Hoodie", svg:'<rect x="30" y="58" width="40" height="28" rx="8" fill="#9b59b6"/>'},
+        { id:"r3", name:"Armadura", svg:'<rect x="32" y="58" width="36" height="28" rx="3" fill="#e67e22" stroke="#d35400"/>'},
+        { id:"r4", name:"Espacial", svg:'<rect x="30" y="56" width="40" height="32" rx="6" fill="#2c3e50"/><circle cx="50" cy="72" r="6" fill="#00e5ff"/>'}
       ],
       accesorios: [
-        { id:"a0", name:"Ninguno", gender:"unisex", svg:''},
-        { id:"a1", name:"Lentes", gender:"unisex", svg:'<rect x="38" y="38" width="10" height="8" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/><rect x="52" y="38" width="10" height="8" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/><line x1="48" y1="42" x2="52" y2="42" stroke="#fff" stroke-width="1.5"/>'},
-        { id:"a3", name:"Auriculares", gender:"unisex", svg:'<path d="M32 38 Q32 28 50 28 Q68 28 68 38" fill="none" stroke="#ff3d9a" stroke-width="3"/><circle cx="32" cy="40" r="4" fill="#ff3d9a"/><circle cx="68" cy="40" r="4" fill="#ff3d9a"/>'},
-        { id:"a2", name:"Corona", gender:"female", svg:'<path d="M38 18 L42 10 L46 16 L50 8 L54 16 L58 10 L62 18Z" fill="#ffd700"/>'},
-        { id:"a4", name:"Capa", gender:"female", svg:'<path d="M35 60 Q30 75 25 95 L75 95 Q70 75 65 60" fill="#c742ff" opacity=".7"/>'}
+        { id:"a0", name:"Ninguno", svg:''},
+        { id:"a1", name:"Lentes", svg:'<rect x="38" y="38" width="10" height="8" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/><rect x="52" y="38" width="10" height="8" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/><line x1="48" y1="42" x2="52" y2="42" stroke="#fff" stroke-width="1.5"/>'},
+        { id:"a2", name:"Corona", svg:'<path d="M38 18 L42 10 L46 16 L50 8 L54 16 L58 10 L62 18Z" fill="#ffd700"/>'},
+        { id:"a3", name:"Auriculares", svg:'<path d="M32 38 Q32 28 50 28 Q68 28 68 38" fill="none" stroke="#ff3d9a" stroke-width="3"/><circle cx="32" cy="40" r="4" fill="#ff3d9a"/><circle cx="68" cy="40" r="4" fill="#ff3d9a"/>'},
+        { id:"a4", name:"Capa", svg:'<path d="M35 60 Q30 75 25 95 L75 95 Q70 75 65 60" fill="#c742ff" opacity=".7"/>'}
       ]
     };
 
     function getAvatarConfig(){
-      try{ return JSON.parse(localStorage.getItem("cap-avatar") || '{"gender":"hombre","pelo":"p5","ropa":"r0","barba":"b0","beard":"ninguna","acc":"a1","color":"#ffe3d0"}'); }
-      catch(e){ return {gender:"hombre",pelo:"p5",ropa:"r0",barba:"b0",beard:"ninguna",acc:"a1",color:"#ffe3d0"}; }
+      try{ return JSON.parse(localStorage.getItem("cap-avatar") || '{"pelo":"p0","ropa":"r0","acc":"a0","color":"#6342ff"}'); }
+      catch(e){ return {pelo:"p0",ropa:"r0",acc:"a0",color:"#6342ff"}; }
     }
     function saveAvatarConfig(cfg){
       localStorage.setItem("cap-avatar", JSON.stringify(cfg));
-      localStorage.setItem("cap-avatar-cfg", JSON.stringify(cfg));
       if(t.bus) t.bus.emit("avatar-change", cfg);
     }
 
     function renderAvatarPreview(cfg){
-      var isMale = cfg.gender === "hombre";
-      var pelo = AVATAR_ITEMS.pelo.find(function(x){ return x.id === cfg.pelo; }) || (isMale ? AVATAR_ITEMS.pelo[2] : AVATAR_ITEMS.pelo[1]);
+      var pelo = AVATAR_ITEMS.pelo.find(function(x){ return x.id === cfg.pelo; }) || AVATAR_ITEMS.pelo[0];
       var ropa = AVATAR_ITEMS.ropa.find(function(x){ return x.id === cfg.ropa; }) || AVATAR_ITEMS.ropa[0];
       var acc = AVATAR_ITEMS.accesorios.find(function(x){ return x.id === cfg.acc; }) || AVATAR_ITEMS.accesorios[0];
-      var barbaId = cfg.barba || (cfg.beard === "bigote" ? "b1" : cfg.beard === "corta" ? "b2" : cfg.beard === "larga" ? "b3" : "b0");
-      var barba = AVATAR_ITEMS.barba.find(function(x){ return x.id === barbaId; }) || AVATAR_ITEMS.barba[0];
-      if (isMale && (acc.id === "a2" || acc.id === "a4")) acc = AVATAR_ITEMS.accesorios[0];
 
       return '<svg viewBox="0 0 100 100" width="120" height="120">' +
         '<defs><linearGradient id="grad-hair" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6342ff"/><stop offset="100%" stop-color="#ff3d9a"/></linearGradient></defs>' +
@@ -261,48 +244,24 @@
         ropa.svg +
         '<circle cx="50" cy="40" r="16" fill="' + cfg.color + '"/>' +
         '<circle cx="44" cy="38" r="2.5" fill="#fff"/><circle cx="56" cy="38" r="2.5" fill="#fff"/>' +
-        (isMale ? '<path d="M42 34 L47 34 M53 34 L58 34" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>' : '') +
         '<path d="M44 46 Q50 50 56 46" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>' +
-        (isMale && barba ? barba.svg : '') +
-        (pelo && pelo.svg ? pelo.svg : '') +
+        pelo.svg +
         (acc.id !== "a4" ? acc.svg : '') +
         '</svg>';
     }
 
-    var _avatarSnapshot = null;
-
     function renderAvatarCustomizer(el){
       var cfg = getAvatarConfig();
-      if (!_avatarSnapshot) {
-        _avatarSnapshot = JSON.parse(JSON.stringify(cfg));
-      }
-      var isMale = cfg.gender === "hombre";
-
       var html = '<div class="avatar-customizer">';
       html += '<h2 class="h2">Personaliza tu Avatar</h2>';
-      html += '<p class="lead muted">Elige género, peinado, barba, ropa y accesorios. Puedes deshacer, quitar elementos y guardar cuando quieras.</p>';
-
-      /* Quick Actions Toolbar */
-      html += '<div class="row" style="margin-top:1rem;gap:.5rem;flex-wrap:wrap;background:rgba(255,255,255,0.03);padding:.8rem;border-radius:12px;border:1px solid rgba(255,255,255,0.1)">';
-      html += '<button class="btn sm ghost" id="btn-undo-2d" title="Revertir cambios al estado inicial">↩ Deshacer Cambios</button>';
-      html += '<button class="btn sm ghost" id="btn-rem-hair-2d" title="Quitar el pelo">❌ Quitar Cabello</button>';
-      if(isMale) html += '<button class="btn sm ghost" id="btn-rem-beard-2d" title="Quitar barba">❌ Quitar Barba</button>';
-      html += '<button class="btn sm primary" id="btn-save-2d" style="margin-left:auto">💾 Guardar Cambios</button>';
-      html += '</div>';
-
-      /* Gender Toggle */
-      html += '<div class="card flat" style="margin-top:1rem"><div class="h3">Género</div>';
-      html += '<div class="row" style="margin-top:.5rem;gap:.7rem">';
-      html += '<button class="btn sm' + (isMale ? ' primary' : '') + '" id="btn-custom-hombre">👦 Hombre</button>';
-      html += '<button class="btn sm' + (!isMale ? ' primary' : '') + '" id="btn-custom-mujer">👧 Mujer</button>';
-      html += '</div></div>';
+      html += '<p class="lead muted">Elige peinado, ropa y accesorios</p>';
 
       html += '<div class="split" style="margin-top:1rem">';
 
       /* Preview */
       html += '<div class="card" style="text-align:center;padding:2rem">';
       html += '<div id="avatar-preview">' + renderAvatarPreview(cfg) + '</div>';
-      html += '<div class="h3" style="margin-top:.5rem">Tu Avatar ' + (isMale ? '(Hombre)' : '(Mujer)') + '</div>';
+      html += '<div class="h3" style="margin-top:.5rem">Tu Avatar</div>';
       html += '</div>';
 
       /* Options */
@@ -310,26 +269,22 @@
 
       /* Color */
       html += '<div class="card flat"><div class="h3">Color de piel</div>';
-      html += '<div class="row" style="margin-top:.5rem;gap:.5rem;flex-wrap:wrap">';
-      var skinColors = ["#ffe3d0","#f6cfae","#e8b48f","#c98d63","#9a6440","#6b4226","#6342ff","#ff6b9d"];
+      html += '<div class="row" style="margin-top:.5rem;gap:.5rem">';
+      var skinColors = ["#6342ff","#c742ff","#ff6b9d","#ffd700","#e67e22","#3498db","#2ecc71","#8e44ad","#e74c3c","#1abc9c"];
       for(var c=0;c<skinColors.length;c++){
         html += '<button class="avatar-color-btn' + (cfg.color === skinColors[c] ? ' selected' : '') + '" data-color="' + skinColors[c] + '" style="width:32px;height:32px;border-radius:50%;background:' + skinColors[c] + ';border:3px solid ' + (cfg.color === skinColors[c] ? '#fff' : 'transparent') + ';cursor:pointer"></button>';
       }
       html += '</div></div>';
 
-      /* Categories filtered by gender */
+      /* Categories */
       var cats = [
-        { key:"pelo", label:"Cabello / Peinado", items: AVATAR_ITEMS.pelo.filter(function(x){ return isMale ? x.gender !== "female" : x.gender !== "male"; }) },
-        { key:"ropa", label:"Ropa / Atuendo", items: AVATAR_ITEMS.ropa.filter(function(x){ return isMale ? x.gender !== "female" : true; }) },
-        { key:"acc", label:"Accesorios", items: AVATAR_ITEMS.accesorios.filter(function(x){ return isMale ? x.gender !== "female" : true; }) }
+        { key:"pelo", label:"Peinado", items:AVATAR_ITEMS.pelo },
+        { key:"ropa", label:"Ropa", items:AVATAR_ITEMS.ropa },
+        { key:"acc", label:"Accesorios", items:AVATAR_ITEMS.accesorios }
       ];
-      if (isMale) {
-        cats.splice(1, 0, { key:"barba", label:"Barba y Bigote (Sobre el Labio)", items: AVATAR_ITEMS.barba.filter(function(x){ return x.gender !== "female"; }) });
-      }
-
       for(var ci=0;ci<cats.length;ci++){
         var cat = cats[ci];
-        var current = cfg[cat.key] || (cat.key === "barba" ? "b0" : "");
+        var current = cfg[cat.key];
         html += '<div class="card flat"><div class="h3">' + cat.label + '</div>';
         html += '<div class="row" style="margin-top:.5rem;gap:.4rem;flex-wrap:wrap">';
         for(var it=0;it<cat.items.length;it++){
@@ -344,81 +299,10 @@
       el.innerHTML = html;
 
       /* Event delegation */
-      var btnH = el.querySelector("#btn-custom-hombre");
-      var btnM = el.querySelector("#btn-custom-mujer");
-      if(btnH){
-        btnH.onclick = function(){
-          cfg.gender = "hombre";
-          cfg.pelo = "p5"; // Tupé
-          cfg.ropa = "r0"; // Camiseta
-          cfg.barba = "b0";
-          cfg.beard = "ninguna";
-          if(cfg.acc === "a2" || cfg.acc === "a4") cfg.acc = "a0";
-          saveAvatarConfig(cfg);
-          renderAvatarCustomizer(el);
-        };
-      }
-      if(btnM){
-        btnM.onclick = function(){
-          cfg.gender = "mujer";
-          cfg.pelo = "p0";
-          cfg.barba = "b0";
-          cfg.beard = "ninguna";
-          saveAvatarConfig(cfg);
-          renderAvatarCustomizer(el);
-        };
-      }
-
-      var btnUndo = el.querySelector("#btn-undo-2d");
-      if(btnUndo){
-        btnUndo.onclick = function(){
-          if(_avatarSnapshot){
-            cfg = JSON.parse(JSON.stringify(_avatarSnapshot));
-            saveAvatarConfig(cfg);
-            renderAvatarCustomizer(el);
-            if(ui.toast) ui.toast("Cambios Deshechos", "Tu avatar ha regresado al aspecto original.", "i");
-          }
-        };
-      }
-
-      var btnRemHair = el.querySelector("#btn-rem-hair-2d");
-      if(btnRemHair){
-        btnRemHair.onclick = function(){
-          cfg.pelo = "p_none";
-          saveAvatarConfig(cfg);
-          renderAvatarCustomizer(el);
-          if(ui.toast) ui.toast("Cabello Quitado", "Has quitado el cabello de tu avatar (calvo).", "i");
-        };
-      }
-
-      var btnRemBeard = el.querySelector("#btn-rem-beard-2d");
-      if(btnRemBeard){
-        btnRemBeard.onclick = function(){
-          cfg.barba = "b0";
-          cfg.beard = "ninguna";
-          saveAvatarConfig(cfg);
-          renderAvatarCustomizer(el);
-          if(ui.toast) ui.toast("Barba Quitada", "Has retirado la barba y el bigote.", "i");
-        };
-      }
-
-      var btnSave = el.querySelector("#btn-save-2d");
-      if(btnSave){
-        btnSave.onclick = function(){
-          _avatarSnapshot = JSON.parse(JSON.stringify(cfg));
-          saveAvatarConfig(cfg);
-          if(window.CapAudio && CapAudio.sfx && CapAudio.sfx.levelUp) CapAudio.sfx.levelUp();
-          if(ui.toast) ui.toast("¡Avatar Guardado!", "Tu nuevo diseño ha sido guardado exitosamente.", "ok");
-        };
-      }
-
       el.addEventListener("click", function(e){
         var btn = e.target.closest(".avatar-item-btn");
         if(btn){
           cfg[btn.dataset.cat] = btn.dataset.id;
-          if(btn.dataset.cat === "barba"){
-            cfg.beard = btn.dataset.id === "b1" ? "bigote" : btn.dataset.id === "b2" ? "corta" : btn.dataset.id === "b3" ? "larga" : "ninguna";
-          }
           saveAvatarConfig(cfg);
           renderAvatarCustomizer(el);
           return;

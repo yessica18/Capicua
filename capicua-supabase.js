@@ -1,448 +1,337 @@
-/**
- * =====================================================================
- * CAPICÚA 3.0 — Capa de Servicios y Conector Supabase / Backend
- * =====================================================================
- * Unifica:
- *   1. Supabase Auth (Registro, Inicio de sesión, Recuperación)
- *   2. Sincronización de progreso (PostgreSQL + Cola Offline)
- *   3. Conexión segura con Capi IA (Netlify Serverless)
- *   4. Verificación de Membresías y Pagos
- *   5. Migración transparente de datos huérfanos de localStorage
- */
+/*  CAPICÚA — Supabase integration module
+    Auth (email OTP), user profiles, progress sync, security (RLS)
+    Loads Supabase JS SDK from CDN, connects to project.
+*/
+(function(){"use strict";
 
-(function () {
-  'use strict';
+const SUPA_URL="https://mmiugrbjxclvtirakwzs.supabase.co";
+const SUPA_KEY="sb_publishable_Du-8dHNrIPgUp6DJyfA2Mg_zNUSYrtD";
+const SDK_URL="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
 
-  // Configuración base
-  const CONFIG = {
-    supabaseUrl: window.CAPICUA_SUPABASE_URL || 'https://tu-proyecto.supabase.co',
-    supabaseKey: window.CAPICUA_SUPABASE_ANON_KEY || '',
-    apiUrl: window.CAPICUA_API || (location.origin.includes('localhost') || location.origin.includes('127.0.0.1') ? '' : ''),
-    storageKey: 'capicua-estado-v1',
-    accountsKey: 'capicua-cuentas-v1',
-    simulacrosKey: 'capicua-progreso-v2',
-    backupKey: 'capicua-migrated-backup-v1'
-  };
+let sb=null,ready=null,readyResolve=null;
+ready=new Promise(r=>readyResolve=r);
 
-  let currentUser = null;
-  let syncTimeout = null;
-  const authListeners = [];
+/* ── Load SDK ── */
+function loadSDK(){
+  return new Promise((res,rej)=>{
+    if(window.supabase&&window.supabase.createClient){res();return}
+    const s=document.createElement("script");
+    s.src=SDK_URL;s.async=true;
+    s.onload=()=>res();
+    s.onerror=()=>rej(new Error("No se pudo cargar Supabase SDK"));
+    document.head.appendChild(s);
+  });
+}
 
-  // ===================================================================
-  // 1. CAPI IA CLIENT (Llama a función Serverless)
-  // ===================================================================
-  async function askCapi(message, extraContext = {}) {
-    const engine = window.CapEngine;
-    const studentState = engine ? engine.S : {};
-    const studentProfile = (studentState && studentState.profile) || {};
-    const level = engine && engine.level ? engine.level() : 1;
-
-    try {
-      const endpoints = ['/api/capi-ask', '/.netlify/functions/capi-ask'];
-      let res = null;
-      let lastErr = null;
-
-      for (const ep of endpoints) {
-        try {
-          res = await fetch(ep, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              message,
-              studentName: studentProfile.name || 'Aventurero',
-              level,
-              topics: extraContext.topics || (engine && engine.weakest ? engine.weakest(2).join(', ') : 'Matemáticas'),
-              history: extraContext.history || []
-            })
-          });
-          if (res && res.ok) break;
-        } catch (e) {
-          lastErr = e;
-        }
+/* ── Init ── */
+async function init(){
+  try{
+    await loadSDK();
+    sb=window.supabase.createClient(SUPA_URL,SUPA_KEY,{
+      auth:{
+        autoRefreshToken:true,
+        persistSession:true,
+        detectSessionInUrl:true,
+        flowType:"pkce"
       }
-
-      if (!res || !res.ok) {
-        throw lastErr || new Error('Error en el servidor de IA');
+    });
+    // Listen for auth changes
+    sb.auth.onAuthStateChange((ev,session)=>{
+      CapiSupa.session=session;
+      CapiSupa.user=session?.user||null;
+      CapiSupa.authenticated=!!session?.user;
+      if(window.CapEngine){
+        const b=window.CapEngine.bus||window.CapEngine;
+        if(b&&b.emit) b.emit("auth-change",{event:ev,user:CapiSupa.user});
       }
-
-      const data = await res.json();
-      return {
-        text: data.text || 'Capi está pensando... por favor repite tu pregunta.',
-        source: data.source || 'serverless'
-      };
-    } catch (err) {
-      console.warn('Fallo en endpoint de Capi IA, usando motor local:', err);
-      // Fallback local elegante para garantizar respuesta
-      return {
-        text: `¡Hola, **${studentProfile.name || 'aventurero'}**! Para resolver esta duda matemática paso a paso:
-1. Recuerda identificar los datos principales del enunciado.
-2. ¿Qué fórmula o propiedad matemática crees que relaciona estos datos?
-Escríbeme lo que llevas hecho y te daré la siguiente pista.`,
-        source: 'local-fallback'
-      };
-    }
+      if(ev==="SIGNED_IN"&&CapiSupa.user){
+        ensureProfile().catch(()=>{});
+        syncProgressFromCloud().catch(()=>{});
+      }
+    });
+    // Check existing session
+    const{data:{session}}=await sb.auth.getSession();
+    CapiSupa.session=session;
+    CapiSupa.user=session?.user||null;
+    CapiSupa.authenticated=!!session?.user;
+    CapiSupa.available=true;
+    readyResolve(true);
+  }catch(e){
+    console.warn("CAPICÚA Supabase init error:",e);
+    CapiSupa.available=false;
+    readyResolve(false);
   }
+}
 
-  // ===================================================================
-  // 2. ADAPTADOR DE PERSISTENCIA Y SINCRONIZACIÓN (CapEngine.Store)
-  // ===================================================================
-  const CapStore = {
-    status: 'local', // 'local' | 'sync' | 'offline'
+/* ── Auth: Email OTP ── */
+async function sendOTP(email){
+  if(!sb)throw new Error("Supabase no disponible");
+  const{error}=await sb.auth.signInWithOtp({
+    email,
+    options:{shouldCreateUser:true}
+  });
+  if(error)throw error;
+  return true;
+}
 
-    init() {
-      // Registrar CapAPI como disponible para el sistema
-      if (window.CapAPI) {
-        window.CapAPI.available = true;
-        window.CapAPI.aiEnabled = true;
-        window.CapAPI.sample = async (query, opts) => {
-          const res = await askCapi(typeof query === 'string' ? query : query.prompt || '', opts);
-          return res;
-        };
-      }
+async function verifyOTP(email,token){
+  if(!sb)throw new Error("Supabase no disponible");
+  const{data,error}=await sb.auth.verifyOtp({
+    email,token,type:"email"
+  });
+  if(error)throw error;
+  return data;
+}
 
-      // Conectar con CapEngine si ya está cargado
-      if (window.CapEngine && window.CapEngine.Store) {
-        this.attachToEngine();
-      } else {
-        window.addEventListener('load', () => this.attachToEngine());
-      }
-    },
+async function signOut(){
+  if(!sb)return;
+  await sb.auth.signOut();
+  CapiSupa.session=null;
+  CapiSupa.user=null;
+  CapiSupa.authenticated=false;
+}
 
-    attachToEngine() {
-      const engine = window.CapEngine;
-      if (!engine || !engine.Store) return;
-
-      console.log('⚡ Conectando CapStore con CapEngine...');
-
-      // Escuchar cambios de estado para sincronizar
-      engine.bus.on('save', () => {
-        this.queueSync(engine.S);
-      });
-
-      // Migrar datos locales huérfanos al iniciar
-      this.checkLocalMigration();
-    },
-
-    queueSync(state) {
-      clearTimeout(syncTimeout);
-      syncTimeout = setTimeout(() => {
-        this.syncState(state);
-      }, 1500); // Debounce de 1.5s
-    },
-
-    async syncState(state) {
-      // Guardado local de seguridad
-      try {
-        localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
-      } catch (e) {}
-
-      // Si no hay usuario autenticado o no hay Supabase configurado, queda en local
-      if (!currentUser || !CONFIG.supabaseKey) {
-        return;
-      }
-
-      try {
-        // Enviar a Supabase PostgreSQL via RPC o REST
-        const headers = {
-          'apikey': CONFIG.supabaseKey,
-          'Authorization': 'Bearer ' + (currentUser.token || CONFIG.supabaseKey),
-          'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates'
-        };
-
-        const body = {
-          user_id: currentUser.id,
-          level: window.CapEngine ? window.CapEngine.level() : 1,
-          xp: state.xp || 0,
-          pi_coins: state.pi || 0,
-          streak_days: state.streak || 0,
-          current_mentor: state.mentor || 'arquimedes',
-          state_snapshot: state,
-          updated_at: new Date().toISOString()
-        };
-
-        await fetch(`${CONFIG.supabaseUrl}/rest/v1/student_progress`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(body)
-        });
-
-        this.status = 'sync';
-      } catch (err) {
-        console.warn('Error sincronizando progreso con la nube, conservado en local:', err);
-        this.status = 'offline';
-      }
-    },
-
-    checkLocalMigration() {
-      try {
-        const localProg = localStorage.getItem(CONFIG.storageKey);
-        const simProg = localStorage.getItem(CONFIG.simulacrosKey);
-        if (localProg || simProg) {
-          // Mantener copia de respaldo para evitar cualquier pérdida
-          if (!localStorage.getItem(CONFIG.backupKey)) {
-            localStorage.setItem(CONFIG.backupKey, JSON.stringify({
-              v1: localProg,
-              v2: simProg,
-              timestamp: Date.now()
-            }));
-          }
-        }
-      } catch (e) {}
-    }
+/* ── Profiles ── */
+async function ensureProfile(){
+  if(!sb||!CapiSupa.user)return null;
+  const uid=CapiSupa.user.id;
+  const{data:existing}=await sb.from("profiles").select("*").eq("id",uid).maybeSingle();
+  if(existing)return existing;
+  // Create profile from CapEngine state
+  const eng=window.CapEngine;
+  const state=eng?eng.S:null;
+  const profile={
+    id:uid,
+    email:CapiSupa.user.email,
+    username:state?.profile?.username||state?.profile?.name||CapiSupa.user.email?.split("@")[0]||"Estudiante",
+    avatar:state?.profile?.avatar||null,
+    pi_coins:state?.pi||0,
+    level:state?.level||1,
+    xp:state?.xp||0,
+    created_at:new Date().toISOString()
   };
+  const{data,error}=await sb.from("profiles").upsert(profile,{onConflict:"id"}).select().single();
+  if(error)console.warn("Profile upsert error:",error);
+  return data||profile;
+}
 
-  // Helper criptográfico para contraseñas locales seguras (PBKDF2 con SHA-256)
-  async function hashPasswordSecure(password, salt) {
-    try {
-      if (window.crypto && window.crypto.subtle) {
-        salt = salt || window.crypto.getRandomValues(new Uint8Array(16));
-        const enc = new TextEncoder();
-        const saltBuf = typeof salt === 'string' ? enc.encode(salt) : salt;
-        const keyMaterial = await window.crypto.subtle.importKey(
-          'raw',
-          enc.encode(password),
-          { name: 'PBKDF2' },
-          false,
-          ['deriveBits']
-        );
-        const derived = await window.crypto.subtle.deriveBits(
-          {
-            name: 'PBKDF2',
-            salt: saltBuf,
-            iterations: 50000,
-            hash: 'SHA-256'
-          },
-          keyMaterial,
-          256
-        );
-        const hashHex = Array.from(new Uint8Array(derived)).map(b => b.toString(16).padStart(2, '0')).join('');
-        const saltHex = typeof salt === 'string' ? salt : Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
-        return `pbkdf2$50000$${saltHex}$${hashHex}`;
-      }
-    } catch (e) {}
-    return 'sha_' + btoa(password);
+async function updateProfile(updates){
+  if(!sb||!CapiSupa.user)return null;
+  const{data,error}=await sb.from("profiles").update(updates).eq("id",CapiSupa.user.id).select().single();
+  if(error)throw error;
+  return data;
+}
+
+async function getProfile(){
+  if(!sb||!CapiSupa.user)return null;
+  const{data}=await sb.from("profiles").select("*").eq("id",CapiSupa.user.id).maybeSingle();
+  return data;
+}
+
+/* ── Progress sync ── */
+async function saveProgress(state){
+  if(!sb||!CapiSupa.user)return false;
+  const payload={
+    user_id:CapiSupa.user.id,
+    state_json:typeof state==="string"?state:JSON.stringify(state),
+    updated_at:new Date().toISOString()
+  };
+  const{error}=await sb.from("progress").upsert(payload,{onConflict:"user_id"});
+  if(error){console.warn("Progress save error:",error);return false}
+  return true;
+}
+
+async function loadProgress(){
+  if(!sb||!CapiSupa.user)return null;
+  const{data}=await sb.from("progress").select("state_json,updated_at").eq("user_id",CapiSupa.user.id).maybeSingle();
+  if(!data||!data.state_json)return null;
+  try{return{state:JSON.parse(data.state_json),updated:data.updated_at}}catch{return null}
+}
+
+async function syncProgressFromCloud(){
+  if(!window.CapEngine)return;
+  const cloud=await loadProgress();
+  if(!cloud)return;
+  const eng=window.CapEngine;
+  const local=eng.S;
+  // Compare timestamps - cloud wins if newer
+  const cloudTime=new Date(cloud.updated).getTime();
+  const localTime=local.updatedAt||0;
+  if(cloudTime>localTime){
+    // Merge cloud state into local
+    try{
+      const merged=Object.assign({},local,cloud.state);
+      localStorage.setItem("capicua-estado-v1",JSON.stringify(merged));
+      location.reload();
+    }catch(e){console.warn("Cloud sync merge error:",e)}
   }
+}
 
-  async function verifyPasswordSecure(password, storedHash) {
-    if (!storedHash) return false;
-    if (storedHash.startsWith('pbkdf2$')) {
-      const parts = storedHash.split('$');
-      const saltHex = parts[2];
-      const testHash = await hashPasswordSecure(password, saltHex);
-      return testHash === storedHash;
-    }
-    return storedHash === btoa(password) || storedHash === ('sha_' + btoa(password));
+/* ── Leaderboard ── */
+async function getLeaderboard(limit=20){
+  if(!sb)return[];
+  const{data}=await sb.from("profiles").select("username,avatar,pi_coins,level,xp").order("xp",{ascending:false}).limit(limit);
+  return data||[];
+}
+
+/* ── Auth UI ── */
+function showAuthModal(){
+  const ui=window.CapUI;
+  if(!ui)return;
+  const esc=ui.esc||(s=>s);
+  if(CapiSupa.authenticated){
+    ui.modal(`<div class="stack tight" style="text-align:center">
+      <span class="h2">Tu cuenta</span>
+      <p>Conectada como <b>${esc(CapiSupa.user.email)}</b></p>
+      <p class="small muted">Tu progreso se guarda en la nube automaticamente.</p>
+      <div class="row" style="justify-content:center">
+        <button class="btn" id="sb-logout">Cerrar sesion</button>
+        <button class="btn primary" data-close>Listo</button>
+      </div>
+    </div>`,(el,close)=>{
+      el.querySelector("#sb-logout").onclick=async()=>{
+        await signOut();close();
+        ui.toast("Sesion cerrada","Puedes iniciar sesion de nuevo cuando quieras.","i");
+      };
+    });
+    return;
   }
-
-  // ===================================================================
-  // 3. AUTENTICACIÓN CENTRALIZADA
-  // ===================================================================
-  const CapAuth = {
-    getUser() {
-      if (currentUser) return currentUser;
-      try {
-        const stored = localStorage.getItem('capicua-session');
-        if (stored) {
-          currentUser = JSON.parse(stored);
+  let step="email",currentEmail="";
+  const render=(container,close)=>{
+    if(step==="email"){
+      container.innerHTML=`<div class="stack tight">
+        <span class="h2">Iniciar sesion</span>
+        <p class="small">Te enviaremos un codigo a tu correo para verificar tu identidad. Sin contrasena.</p>
+        <form id="sb-form" class="stack tight" novalidate>
+          <label class="lbl">Correo electronico
+            <input id="sb-email" type="email" placeholder="tu@correo.com" required autocomplete="email" style="width:100%">
+          </label>
+          <p id="sb-err" class="small" style="color:var(--pink);display:none"></p>
+          <div class="row">
+            <button type="submit" class="btn primary lg" id="sb-send">Enviar codigo</button>
+            <button type="button" class="btn" data-close>Cancelar</button>
+          </div>
+        </form>
+      </div>`;
+      const form=container.querySelector("#sb-form");
+      const emailInput=container.querySelector("#sb-email");
+      const errP=container.querySelector("#sb-err");
+      const btn=container.querySelector("#sb-send");
+      form.onsubmit=async(e)=>{
+        e.preventDefault();
+        const email=emailInput.value.trim();
+        if(!email){errP.textContent="Escribe tu correo.";errP.style.display="";return}
+        btn.disabled=true;btn.textContent="Enviando...";
+        errP.style.display="none";
+        try{
+          await sendOTP(email);
+          currentEmail=email;
+          step="code";
+          render(container,close);
+        }catch(err){
+          errP.textContent=err.message||"Error al enviar el codigo.";
+          errP.style.display="";
+          btn.disabled=false;btn.textContent="Enviar codigo";
         }
-      } catch (e) {}
-      return currentUser;
-    },
-
-    async register(username, password, email, fullName) {
-      username = (username || '').trim().toLowerCase();
-      if (!username || username.length < 3) {
-        throw new Error('El nombre de usuario debe tener al menos 3 caracteres.');
-      }
-      if (!password || password.length < 6) {
-        throw new Error('La contraseña debe tener al menos 6 caracteres.');
-      }
-
-      // Si Supabase está configurado en el cliente:
-      if (CONFIG.supabaseKey && CONFIG.supabaseUrl.includes('supabase.co')) {
-        try {
-          const userEmail = email || `${username}@capicua.app`;
-          const res = await fetch(`${CONFIG.supabaseUrl}/auth/v1/signup`, {
-            method: 'POST',
-            headers: {
-              'apikey': CONFIG.supabaseKey,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email: userEmail,
-              password,
-              data: { username, full_name: fullName || username }
-            })
-          });
-
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.msg || data.error_description || 'Error al registrar usuario en Supabase.');
-
-          currentUser = {
-            id: data.user?.id || 'usr_' + Date.now(),
-            username,
-            email: userEmail,
-            token: data.access_token
-          };
-          localStorage.setItem('capicua-session', JSON.stringify(currentUser));
-          this.notifyAuth(currentUser);
-          return currentUser;
-        } catch (err) {
-          console.warn('Fallo en Supabase Auth, aplicando registro local seguro:', err);
-        }
-      }
-
-      // Fallback local seguro con hashing PBKDF2
-      const usersData = this.getLocalUsers();
-      if (usersData[username]) {
-        throw new Error('Ese nombre de usuario ya está registrado.');
-      }
-
-      const passwordHash = await hashPasswordSecure(password);
-      const newUser = {
-        id: 'usr_' + Date.now().toString(36),
-        username,
-        email: email || `${username}@capicua.local`,
-        fullName: fullName || username,
-        created: Date.now()
       };
-
-      usersData[username] = { ...newUser, passwordHash };
-      localStorage.setItem(CONFIG.accountsKey, JSON.stringify({ users: usersData, current: username }));
-
-      currentUser = newUser;
-      localStorage.setItem('capicua-session', JSON.stringify(currentUser));
-      this.notifyAuth(currentUser);
-      return currentUser;
-    },
-
-    async login(usernameOrEmail, password) {
-      usernameOrEmail = (usernameOrEmail || '').trim().toLowerCase();
-
-      // Intento en Supabase Auth
-      if (CONFIG.supabaseKey && CONFIG.supabaseUrl.includes('supabase.co')) {
-        try {
-          const email = usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@capicua.app`;
-          const res = await fetch(`${CONFIG.supabaseUrl}/auth/v1/token?grant_type=password`, {
-            method: 'POST',
-            headers: {
-              'apikey': CONFIG.supabaseKey,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-          });
-
-          const data = await res.json();
-          if (res.ok && data.user) {
-            currentUser = {
-              id: data.user.id,
-              username: data.user.user_metadata?.username || usernameOrEmail,
-              email: data.user.email,
-              token: data.access_token
-            };
-            localStorage.setItem('capicua-session', JSON.stringify(currentUser));
-            this.notifyAuth(currentUser);
-            return currentUser;
+    }else{
+      container.innerHTML=`<div class="stack tight">
+        <span class="h2">Verificar codigo</span>
+        <p class="small">Enviamos un codigo de 6 digitos a <b>${currentEmail}</b>. Revisalo (tambien en spam).</p>
+        <form id="sb-vform" class="stack tight" novalidate>
+          <label class="lbl">Codigo de verificacion
+            <input id="sb-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required autocomplete="one-time-code" style="width:100%;font-size:1.5rem;text-align:center;letter-spacing:.5em">
+          </label>
+          <p id="sb-verr" class="small" style="color:var(--pink);display:none"></p>
+          <div class="row">
+            <button type="submit" class="btn primary lg" id="sb-verify">Verificar</button>
+            <button type="button" class="btn" id="sb-back">Cambiar correo</button>
+          </div>
+        </form>
+      </div>`;
+      const vform=container.querySelector("#sb-vform");
+      const codeInput=container.querySelector("#sb-code");
+      const verrP=container.querySelector("#sb-verr");
+      const vbtn=container.querySelector("#sb-verify");
+      container.querySelector("#sb-back").onclick=()=>{step="email";render(container,close)};
+      vform.onsubmit=async(e)=>{
+        e.preventDefault();
+        const code=codeInput.value.trim();
+        if(!code||code.length<6){verrP.textContent="El codigo tiene 6 digitos.";verrP.style.display="";return}
+        vbtn.disabled=true;vbtn.textContent="Verificando...";
+        verrP.style.display="none";
+        try{
+          await verifyOTP(currentEmail,code);
+          close();
+          const ui2=window.CapUI;
+          if(ui2)ui2.toast("Bienvenida","Sesion iniciada correctamente.","ok");
+          // Save current local progress to cloud
+          if(window.CapEngine){
+            const st=window.CapEngine.S;
+            st._lastSave=new Date().toISOString();
+            await saveProgress(st);
           }
-        } catch (err) {
-          console.warn('Fallo login en Supabase, verificando cuentas locales:', err);
+        }catch(err){
+          verrP.textContent=err.message||"Codigo incorrecto. Intentalo de nuevo.";
+          verrP.style.display="";
+          vbtn.disabled=false;vbtn.textContent="Verificar";
         }
-      }
-
-      // Verificación en cuentas locales con hashing seguro
-      const usersData = this.getLocalUsers();
-      const userRecord = usersData[usernameOrEmail] || Object.values(usersData).find(u => u.email === usernameOrEmail);
-
-      const isValid = userRecord && await verifyPasswordSecure(password, userRecord.passwordHash);
-      if (!isValid) {
-        throw new Error('Nombre de usuario o contraseña incorrectos.');
-      }
-
-      currentUser = {
-        id: userRecord.id,
-        username: userRecord.username,
-        email: userRecord.email,
-        fullName: userRecord.fullName
-      };
-      localStorage.setItem('capicua-session', JSON.stringify(currentUser));
-      this.notifyAuth(currentUser);
-      return currentUser;
-    },
-
-    logout() {
-      currentUser = null;
-      localStorage.removeItem('capicua-session');
-      this.notifyAuth(null);
-    },
-
-    getLocalUsers() {
-      try {
-        const raw = localStorage.getItem(CONFIG.accountsKey);
-        return (raw && JSON.parse(raw).users) || {};
-      } catch (e) {
-        return {};
-      }
-    },
-
-    onAuthChange(fn) {
-      authListeners.push(fn);
-    },
-
-    notifyAuth(user) {
-      authListeners.forEach(fn => {
-        try { fn(user); } catch (e) {}
-      });
-    }
-  };
-
-  // ===================================================================
-  // 4. PASARELA DE PAGOS SEGURA (Conexión Backend & Serverless)
-  // ===================================================================
-  const CapPayments = {
-    async createCheckout(planId, period = 'monthly', country = 'CO') {
-      const endpoints = ['/api/payment-checkout', '/.netlify/functions/payment-checkout'];
-      for (const ep of endpoints) {
-        try {
-          const res = await fetch(ep, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              planId,
-              period,
-              country,
-              userId: currentUser ? currentUser.id : null
-            })
-          });
-
-          if (res.ok) {
-            return await res.json();
-          }
-        } catch (err) {}
-      }
-
-      // Respaldo de contingencia estructurado
-      return {
-        ok: true,
-        reference: 'CAP-DEMO-' + Date.now().toString(36).toUpperCase(),
-        amount: period === 'annual' ? 32800 : 3900,
-        currency: 'COP',
-        planId,
-        sandbox: true
       };
     }
   };
+  ui.modal("",(el,close)=>render(el,close));
+}
 
-  // Exponer API unificada en el espacio global
-  window.CapSupabase = {
-    config: CONFIG,
-    store: CapStore,
-    auth: CapAuth,
-    capi: { ask: askCapi },
-    payments: CapPayments
+/* ── Hook into CapEngine save ── */
+function hookSave(){
+  if(!window.CapEngine)return;
+  const eng=window.CapEngine;
+  const origSave=eng.Store&&eng.Store.save;
+  if(!origSave)return;
+  let saveTimer=null;
+  eng.Store.save=function(force){
+    origSave.call(this,force);
+    if(!CapiSupa.authenticated)return;
+    // Debounce cloud saves
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      try{
+        const st=JSON.parse(JSON.stringify(eng.S));
+        st._lastSave=new Date().toISOString();
+        saveProgress(st).catch(()=>{});
+      }catch(e){}
+    },force?500:5000);
   };
+}
 
-  // Auto-arranque
-  CapStore.init();
+/* ── Public API ── */
+const CapiSupa={
+  available:false,
+  authenticated:false,
+  session:null,
+  user:null,
+  ready,
+  init,
+  sendOTP,
+  verifyOTP,
+  signOut,
+  getProfile,
+  updateProfile,
+  ensureProfile,
+  saveProgress,
+  loadProgress,
+  getLeaderboard,
+  showAuthModal,
+  hookSave,
+  get sb(){return sb}
+};
+window.CapiSupa=CapiSupa;
+
+// Auto-init when DOM ready
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",()=>{init().then(hookSave)});
+}else{
+  init().then(hookSave);
+}
 
 })();

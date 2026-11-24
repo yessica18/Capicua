@@ -663,15 +663,14 @@
       const msg = {
         denied: `<p>El navegador bloqueó el micrófono para CAPICÚA.</p><p class="small">${how}</p>`,
         nodevice: '<p>No encontramos ningún micrófono conectado. Revisa que esté conectado y que otra aplicación no lo esté usando.</p>',
-        insecure: '<p>El micrófono solo funciona en páginas seguras (https). Abre CAPICÚA desde <b>https://TU-USUARIO.github.io/capicua-ultima-version/</b>.</p>',
+        insecure: '<p>El micrófono solo funciona en páginas seguras (https). Abre CAPICÚA desde <b>https://yessica18.github.io/Capi2/</b>.</p>',
         nostt: `<p>Tu navegador detecta el micrófono, pero no ofrece conversión de voz a texto${isFirefox ? ' (Firefox aún no la incluye)' : ''}.</p><p class="small">Usa Chrome, Edge o Safari para hablar con Capi, o escríbele: el chat por texto siempre funciona.</p>`
       }[kind];
       UI.modal(`<div class="stack"><div class="row" style="flex-wrap:nowrap;gap:1rem">${capiFace('think', 64)}<h2 class="h2">Micrófono</h2></div>${msg}<div class="row"><button class="btn primary" data-close id="mhWrite">Escribirle a Capi</button><button class="btn ghost" data-close>Cerrar</button></div></div>`,
         el => { $('#mhWrite', el).onclick = () => UI.go('capia.conversar'); });
     }
     async function permission() {
-      const isLocal = typeof location !== 'undefined' && (/localhost|127\.0\.0\.1|^192\.168\.|^10\./.test(location.hostname || '') || location.protocol === 'file:');
-      if (!window.isSecureContext && !isLocal) return 'insecure';
+      if (!window.isSecureContext) return 'insecure';
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return SR ? 'ok' : 'nodevice';
       try {
         if (navigator.permissions && navigator.permissions.query) {
