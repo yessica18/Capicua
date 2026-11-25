@@ -1,6 +1,6 @@
 // CAPICÚA — Service worker: abre al instante en visitas repetidas y funciona sin conexión.
 // Todas las rutas son relativas para que funcione bajo https://yessica18.github.io/Capi2/
-const V = 'capicua-2.0.2';
+const V = 'capicua-2.0.3';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'capicua-plus.css?v=2.0.0', 'capicua-plus.js?v=2.0.0', 'marca/capia-icono.svg', 'marca/icon-192.png'];
 self.addEventListener('install', (e) => {
   // Cada archivo se guarda por separado: si uno falla, el resto igual queda en caché.

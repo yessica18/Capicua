@@ -56,9 +56,19 @@
     membresias:  '<circle cx="12" cy="9" r="5"/><path d="M9.5 13.5L8 22l4-2.3 4 2.3-1.5-8.5"/>',
     mascota:     '<path d="M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.7-7 9-7 9z"/>',
     acuario:     '<path d="M3 12c3-5 9-6 13-3l5-3v12l-5-3c-4 3-10 2-13-3z"/><circle cx="8" cy="11" r="1"/>',
-    mentores:    '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
-    avatar:      '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+    mentores:    '<path d="M12 4L2 9l10 5 10-5z"/><path d="M6 11.5V17c0 1.4 2.7 3 6 3s6-1.6 6-3v-5.5"/>',
+    avatar:      '<rect x="4" y="3" width="16" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7.5 18.5a4.5 4.5 0 0 1 9 0"/>',
+    misiones:    '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/>',
+    consejo:     '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="7" r="1.6" fill="currentColor"/><circle cx="7.5" cy="15" r="1.6" fill="currentColor"/><circle cx="16.5" cy="15" r="1.6" fill="currentColor"/><path d="M12 9v2.4M10.6 13.2l-1.7 1.1M13.4 13.2l1.7 1.1"/>',
+    historia:    '<path d="M7 3h10M7 21h10"/><path d="M8 3v3.5c0 2 4 3.2 4 5.5 0-2.3 4-3.5 4-5.5V3"/><path d="M8 21v-3.5c0-2 4-3.2 4-5.5 0 2.3 4 3.5 4 5.5V21"/>',
+    parcial:     '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 14.8l2 2 4-4"/>',
+    buscar:      '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+    universo:    '<circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="4.4"/><ellipse cx="12" cy="12" rx="10" ry="4.4" transform="rotate(60 12 12)"/>'
   };
+
+  /* Rutas cuyo icono se reemplaza siempre: antes compartian
+     el mismo dibujo con otra seccion. */
+  var FORCE = ["misiones", "avatar", "consejo", "mentores", "historia", "parcial", "buscar", "universo"];
 
   /* ── 5. COLORES DEL CHIP (degradado) ── */
   var COLORS = {
@@ -144,6 +154,7 @@
     var svg  = a.querySelector("svg");
     var inner = svg ? svg.innerHTML.trim() : "";
 
+    if(FORCE.indexOf(route) !== -1 && SVG[route]) inner = SVG[route];
     if(!inner) inner = SVG[route] || "";
     if(!inner) inner = '<circle cx="12" cy="12" r="8"/>';
 
