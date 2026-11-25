@@ -17,7 +17,7 @@
   to = "/index.html"
   status = 200
 
-# Cabeceras de seguridad y caché HTTP
+# Cabeceras de seguridad (aplican a todo).
 [[headers]]
   for = "/*"
   [headers.values]
@@ -27,12 +27,45 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(self), geolocation=()"
 
+# ── CACHE HTTP ──
+# Regla general para scripts y hojas de estilo versionados (?v=):
+# un dia servido desde cache al instante + una semana de revalidacion
+# en segundo plano. Al subir "?v=" nuevo la URL cambia y el navegador
+# baja la version nueva; si se olvida subir la version, igual se
+# actualiza solo en la siguiente carga. No es "immutable" a proposito,
+# para que nunca quede un archivo viejo atascado. Las reglas de abajo
+# (vendor, sw) son mas especificas y mandan sobre esta.
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+# Librerias de terceros (three.js): no cambian nunca -> cache de un ano.
 [[headers]]
   for = "/vendor/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Imagenes de marca y de la app (iconos, logos, avatar de marca):
+# cambian poco; se sirven desde cache al instante y se revalidan atras.
 [[headers]]
   for = "/marca/*"
   [headers.values]
     Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+# El service worker NUNCA se cachea largo: debe poder actualizarse
+# siempre para no dejar la pagina atascada en una version vieja.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
